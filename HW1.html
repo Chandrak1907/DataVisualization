@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: relative;
+  width: 960px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: blue ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.grid .tick {
+    stroke: grey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+.grid path {
+          stroke-width: 0;
+}
+
+
+label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+</style>
+
+<body>
+
+<label><input type="checkbox"> Sort values</label>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script> 
+
+// The new data variable.
+
+var orig_str = window.location.search.substring(1);
+var compact_str = orig_str.replace(/%20/g,'').toLowerCase();
+var query = compact_str.replace(/[^\w\s]|_/g, "")
+                   .replace(/\s+/g, " ");
+
+console.log(" given input -- ", query)
+var data = [];
+
+function characterCount(word, character) {
+   var count = 0;
+    for (var i = 0; i < word.length; i++) {
+       if (word[i] === character) {
+           count++;
+       }
+  }
+  return count;
+}
+
+function update(){ 
+  console.log("new input,", new_x1);
+  }
+
+temp = []
+for (var i = 0, l = query.length; i < l; i++) {
+    var currentChar = query[i];
+    var v = characterCount(query, currentChar);
+    if (temp.indexOf(currentChar) == -1){
+        temp.push(currentChar)
+        data.push({"letter":currentChar, "count":v});
+      }
+}
+
+for (var i=0; i<data.length ; i++){ 
+  console.log("Dictionary ",data[i])
+}
+
+// data.sort(function (a, b) {
+//   if (a.count > b.count) {
+//     return 1;
+//   }
+//   if (a.count < b.count) {
+//     return -1;
+//   }
+//   // a must be equal to b
+//   return 0;
+// });
+
+
+// # finding the maximun value of count to give to the number of ticks
+var maximumValue = d3.max(data, function(d) { return d.count; })
+console.log(maximumValue)
+console.log(data)
+
+var margin = {top: 40, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var formatPercent = d3.format(".0%");
+
+var x = d3.scale.ordinal()
+    .domain(data.sort(function(a,b){ return d3.ascending(a.letter,b.letter)}))
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(',.f'))
+    .ticks(maximumValue);
+
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Count:</strong> <span style='color:white'>" + d.count + "</span>";
+  })
+
+var b1 = d3.select("body");
+var g = b1.append('g');
+
+var b2 = b1.append('p')
+            .text('Welcome to Word Count Program');
+
+var bte = b2.append("p").selectAll("input")
+            .data([11])
+            .enter()
+            .append('label')
+                .attr('for',function(d,i){ return 'a'+i; })
+                .text(function(d) { return d; })
+            .attr("onClick", "change(this)") 
+            .append("input")
+                        .attr("class", "externalObject")
+                        .attr("x", 10)
+                        .attr("y", 10)
+                        .attr("width", 200)
+                        .attr("height", 100)
+                        .append("xhtml:div")
+                        .html("<input type='text' id=new_x1 placeholder='input new x1 here' onchange=update()></input>");
+
+console.log("textbox input ",new_x1)
+              /*  .attr("checked", true)
+                .attr("type", "checkbox")
+                .attr("id", function(d,i) { return 'a'+i; })
+                .attr("onClick", "change(this)")    
+                    .append("foreignObject")
+                        .attr("class", "externalObject")
+                        .attr("x", (d3.event.pageX - 20) + "px")
+                        .attr("y", (d3.event.pageY - 40) + "px")
+                        .attr("width", 200)
+                        .attr("height", 100)
+                        .append("xhtml:div")
+                        .html("<input type='text' id=new_x1 placeholder='input new x1 here' onchange=update()></input>");*/
+
+
+//var svg = d3.select("body").append("svg")
+var svg = b2.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.call(tip);
+
+
+// The following code was contained in the callback function.
+x.domain(data.map(function(d) { return d.letter; }));
+y.domain([0, d3.max(data, function(d) { return d.count; })]);
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+  .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Count");
+
+var vowels = ['a','e','i','o','u']
+
+svg.selectAll(".bar")
+    .data(data)
+  .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", function(d) { return x(d.letter); })
+    .attr("width", x.rangeBand())
+    .attr("y", function(d) { return y(d.count); })
+    .attr("height", function(d) { return height - y(d.count); })
+    .style("fill", function(d){
+      if (vowels.indexOf(d.letter) == -1){return "grey"}
+      else {return "skyblue"}
+    ;})
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide)
+    ;
+
+    svg.append("g")     
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + height + ")")
+        .call(make_x_axis()
+            .tickSize(-height, 0, 0)
+            .tickFormat("")
+        )
+
+    svg.append("g")     
+        .attr("class", "grid")
+        .call(make_y_axis()
+            .tickSize(-width, 0, 0)
+            .tickFormat("")
+        )
+
+
+d3.select("input").on("change", change);
+
+  // var sortTimeout = setTimeout(function() {
+  //   d3.select("input").property("checked", true).each(change);
+  // },5000);
+
+  var sortTimeout = function() {
+    d3.select("input").property("checked", true).each(change);
+  };
+
+  function change() {
+    clearTimeout(sortTimeout);
+
+    // Copy-on-write since tweens are evaluated after a delay.
+    var x0 = x.domain(data.sort(this.checked
+        ? function(a, b) { return b.count - a.count; }
+        : function(a, b) { return d3.ascending(a.letter, b.letter); })
+        .map(function(d) { return d.letter; }))
+        .copy();
+
+    svg.selectAll(".bar")
+        .sort(function(a, b) { return x0(a.letter) - x0(b.letter); });
+
+    var transition = svg.transition().duration(750),
+        delay = function(d, i) { return i * 50; };
+
+    transition.selectAll(".bar")
+        .delay(delay)
+        .attr("x", function(d) { return x0(d.letter); });
+
+    transition.select(".x.axis")
+        .call(xAxis)
+      .selectAll("g")
+        .delay(delay);
+  }
+
+
+console.log(vowels.indexOf('p'))
+
+function contains(a, obj) {
+    console.log(data)
+    var i = a.length;
+    while (i--) {
+       if (a[i] === obj) {
+           return "a";
+       }
+    }
+    return "b";
+}
+
+function make_x_axis() {    
+    return d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(5)
+}
+
+function make_y_axis() {    
+    return d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+}
+
+
+// function type(d) {
+//   d.frequency = +d.frequency;
+//   return d;
+// }
+
+</script>
