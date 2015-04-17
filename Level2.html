@@ -31,13 +31,13 @@ circle {
 
 </style>
 <body>
-  <!--
-<script src="http://d3js.org/d3.v3.min.js"></script>  -->
-<script src = "d3.min.js"></script>
+
+<script src="http://d3js.org/d3.v3.min.js"></script> 
+<!-- <script src = "d3.min.js"></script> -->
 <script>
 
 var width = 960,
-    size = 150,
+    size = 250,
     padding = 19.5;
 
 var x = d3.scale.linear()
@@ -123,22 +123,46 @@ d3.csv("state77.csv", function(error, data) {
       .attr("transform", function(d) { return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")"; })
       .each(plot);
 
+    //******************
 
-  var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+var legendGroup = svg.append('g')
+                     .attr('class', 'legend')
+                      .attr("transform", function(d, i) { return "translate(" + (n - i - 1) * size + ",0)"; });
+                     // .attr('transform', /* translate as appropriate */);
+
+var legendEntry = legendGroup.selectAll('g')
+                     .data(data);  
+          //create one legend entry for each series in the dataset array
+          //if that's not what you want, create an array that has one 
+          //value for every entry you want in the legend
+
+legendEntry.enter().append("g")
+      .attr("class", "legend-entry")
+      .attr("transform", function(d, i) { return "translate(1000," + (i * 40 + 420)+")"; });
+            //shift each entry down by approx 1 line (20px)
+
+// legendEntry.append("rect") 
+
+//******************
+
+
+  // var legend = svg.selectAll(".legend")
+  //     .data(color.domain())
+  //   .enter().append("g")
+  //     .attr("class", "legend")
+  //     .attr("transform", function(d, i) { 
+  //       console.log("translate(1000," + (i * 40 + 420)+")");
+  //       return "translate(1000," + (i * 40 + 420)+")"; });
 
   // draw legend colored rectangles
-  legend.append("rect")
+  legendEntry.append("rect")
       .attr("x", width)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color);
 
   // draw legend text
-  legend.append("text")
+  legendEntry.append("text")
       .attr("x", width - 24)
       .attr("y", 0)
       .attr("dy", ".35em")
