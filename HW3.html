@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Chandra's Home Work-3</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+<style type="text/css">
+    body {
+        padding-top: 50px;
+        padding-bottom: 20px;
+    }
+</style>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<!-- Fixed Navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle Navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+           
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Chandra's Home work 3</h1>
+
+        <p>Welcome to my submission website for Home work 3</p>
+
+    </div>
+</div>
+
+<div class="container">
+
+<p style="text-align: center;">
+    <svg id="demo" height="20" width="300"></svg>
+</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2 class="page-header"><a name="homework"></a>Homework</h2>
+
+<!-- START OF PASTE -->
+
+
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+  stroke-width: 1.5px;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0.5, 0, 0.5, 0);
+  color: #843c39;
+  border-radius: 2px;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
+}
+
+
+</style>
+<body>
+  <header> Level 1 - Line Graph </header>
+<div id="Level1"></div>
+<header> Level 1 - Stacked Area Graph </header>
+<div id="Level1Stack"></div>
+<header> Level 2 -  Graph with Zoom </header>
+<div id ="Level1Zoom"></div>
+<header> Level 2 -  Tool tip</header>
+<div id ="ToolTip"></div>
+
+<script src="d3.min.js"></script>  
+<!-- <script src="http://d3js.org/d3.v3.js"></script>   -->
+<!-- <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>   -->
+
+<script>
+
+var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// var parseDate = d3.time.format("%Y%m%d").parse;
+var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var y2 = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.category20();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+
+var yAxis2 = d3.svg.axis()
+    .scale(y2)
+    .orient("left");
+
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) { 
+      // console.log(" In line function",d.date," -- ",y(d.y0));
+      return x(d.date); })
+    .y(function(d) { return y(d.y); });
+
+// Code for Trial 1 below
+// var line = d3.svg.line()
+//     .interpolate("basis")
+//     .x(function(d) { return x(d.date); })
+//     .y(function(d) { return y(d.temperature); });
+// Code for Trial 2 below
+var area = d3.svg.area()
+    .x(function(d) { 
+        // console.log(d);
+        return x(d.date); })
+    .y0(function(d) { return y(d.y0); })
+    .y1(function(d) { return y(d.y0 + d.y); });
+
+var stack = d3.layout.stack()
+    .values(function(d) { return d.values; });
+
+
+// create the zoom listener
+var zoomListener = d3.behavior.zoom()
+  .scaleExtent([0.1, 3])
+  .on("zoom", zoomHandler);
+
+// function for handling zoom event
+function zoomHandler() {
+  svg2.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+
+
+var svg1 = d3.select("#Level1").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+var svg3 = d3.select("#Level1Stack").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+var svg2 = d3.select("#Level1Zoom").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+var svg4 = d3.select("#ToolTip").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+ 
+
+
+// d3.csv("Seatbelts.csv", function(error, data) {
+d3.csv("DatavizTs.csv", function(error, data) {
+
+  
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "time" && key!= "kms" && key!="PetrolPrice" && key!="VanKilled"&&key!="law"; }));
+
+
+
+  data.forEach(function(d) {
+    d.date = parseDate(d.time);
+  });
+
+  ;
+  var cities = stack(color.domain().map(function(name) {
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {date: d.date, y: (+d[name])};
+      })
+    };
+  }));
+
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+
+  y.domain([
+    // d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+    0,d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.y; }) +2000; })
+  ]);
+
+y2.domain([
+    // d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+    0,d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.y; }); })
+  ]);
+
+
+ svg1.append("g")
+    .attr("class", "xAxis")
+    .attr("transform", "translate(0, " + (height ) + ")")
+    .call(xAxis)
+    .attr("y", 1)
+    .append("text")
+    .style("text-anchor", "end")
+      .attr("x", width)
+      // .style({ 'stroke': 'Black', 'fill': 'none', 'stroke-width': '3px'})
+      .attr("y", -5)
+      .text("Year");;
+
+
+
+  svg1.append("g")
+      .attr("class", "y axis")
+      .call(yAxis2)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(" Deaths ");
+
+  var city = svg1.selectAll(".city")
+      .data(cities)
+    .enter().append("g")
+      .attr("class", "city");
+
+ 
+  city.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.name); })
+  
+
+    var focus = svg1.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+  focus.append("circle")
+      .attr("r", 4.5);
+
+  focus.append("text")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+  svg1.append("rect")
+      .attr("class", "overlay")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() { focus.style("display", null); })
+      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  function mousemove() {
+    console.log("In mouse Move ");
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+        console.log(d.date.toString('dd-MM-yy'));
+    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.front) + ")");
+    // focus.select("text").text(d);
+    focus.select("text").text(d.date+"  "+d.rear);
+  }  
+
+
+  // city.append("text")
+  //     .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+  //     .attr("transform", function(d) {
+  //       console.log("I m in function", d);
+  //      return "translate(" + x(d.value.date) + "," + y(d.value.y) + ")"; })
+  //     .attr("x", 3)
+  //     .attr("dy", ".35em")
+  //     .text(function(d) { return d.name; });
+
+
+  // draw legend
+  var legend1 = svg1.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend1.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  // draw legend text
+  legend1.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;});
+
+
+
+//##### Second graph
+
+
+  
+ svg3.append("g")
+    .attr("class", "xAxis")
+    .attr("transform", "translate(0, " + (height ) + ")")
+    .call(xAxis)
+    .attr("y", 1)
+    .append("text")
+    .style("text-anchor", "end")
+      .attr("x", width)
+      // .style({ 'stroke': 'Black', 'fill': 'none', 'stroke-width': '3px'})
+      .attr("y", -5)
+      .text("Year");;
+
+
+  svg3.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(" Deaths ");
+
+
+  var city = svg3.selectAll(".city")
+      .data(cities)
+    .enter().append("g")
+      .attr("class", "city");
+
+  city.append("path")
+      //.attr("class", "line") // for Level-1
+      .attr("class", "area")
+      .attr("d", function(d) { return area(d.values); })
+      .style("fill", function(d) { return color(d.name); });
+
+  // city.append("text")
+  //     .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+  //     .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y) + ")"; })
+  //     .attr("x", 3)
+  //     .attr("dy", ".35em")
+  //     .text(function(d) { return d.name; });
+
+  // draw legend
+  var legend3 = svg3.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend3.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  // draw legend text
+  legend3.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;});
+
+
+
+
+//##### Second graph
+svg2.append("g")
+    .attr("class", "xAxis")
+    .attr("transform", "translate(0, " + (height ) + ")")
+    .call(xAxis)
+    .attr("y", 1)
+    .append("text")
+    .style("text-anchor", "end")
+      .attr("x", width)
+      .style({ 'stroke': 'Black', 'fill': 'none', 'stroke-width': '3px'})
+      .attr("y", -5)
+      .text("Year");;
+
+
+  svg2.append("g")
+      .attr("class", "y axis")
+      .call(yAxis2)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(" Deaths ");
+
+  var city2 = svg2.selectAll(".city")
+      .data(cities)
+    .enter().append("g")
+      .attr("class", "city");
+
+ 
+  city2.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.name); })
+      
+
+  // city2.append("text")
+  //     .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+  //     .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y) + ")"; })
+  //     .attr("x", 3)
+  //     .attr("dy", ".35em")
+  //     .text(function(d) { return d.name; });
+
+   // draw legend
+  var legend2 = svg2.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend2.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  // draw legend text
+  legend2.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;});
+
+
+
+    var focus = svg2.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+  focus.append("circle")
+      .attr("r", 4.5);
+
+  focus.append("text")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+  svg2.append("rect")
+      .attr("class", "overlay")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() { focus.style("display", null); })
+      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  function mousemove() {
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.value.y) + ")");
+    // focus.select("text").text(d);
+    focus.select("text").text(d.date+"  "+d.front);
+  }
+
+zoomListener(svg2);   
+
+//#### Tool Tip Chart
+ color.domain(d3.keys(data[0]).filter(function(key) { return key === "rear"; }));
+
+ 
+
+  data.forEach(function(d) {
+    d.date = parseDate(d.time);
+  });
+
+  
+  var cities4 = stack(color.domain().map(function(name) {
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {date: d.date, y: (+d[name])};
+      })
+    };
+  }));
+
+
+
+
+svg4.append("g")
+    .attr("class", "xAxis")
+    .attr("transform", "translate(0, " + (height ) + ")")
+    .call(xAxis)
+    .attr("y", 1)
+    .append("text")
+    .style("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", -5)
+    .text("Year");;
+
+
+  svg4.append("g")
+      .attr("class", "y axis")
+      .call(yAxis2)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(" Deaths ");
+
+  var city4 = svg4.selectAll(".city")
+      .data(cities4)
+      .enter().append("g")
+      .attr("class", "city");
+
+  city4.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.name); });
+
+  city4.append("text")
+      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+      // .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")"; })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+
+ var focus = svg4.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+  focus.append("circle")
+      .attr("r", 4.5);
+
+  focus.append("text")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+  svg4.append("rect")
+      .attr("class", "overlay")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() { focus.style("display", null); })
+      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  function mousemove() {
+    console.log("In mouse Move ");
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+        console.log(d.date.toString('dd-MM-yy'));
+    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.front) + ")");
+    // focus.select("text").text(d);
+    focus.select("text").text(d.date+"  "+d.rear);
+  }
+
+
+
+});
+
+</script>
+
+<div id="Level4">
+<header> Level 2 - Zoom and Pan </header>
+
+
+<a href="zoomnpan.html">Zoom and Pan</a>
+
+
+
+</div>
+
+    </div>
+
+   
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="page-header"><a name="about"></a>Documentation</h2>
+
+        <div class="media">
+       
+            <div class="media-body">
+                <p> Level 1</p>
+                    <p> 
+                        <ul>
+                            <li>Bubble chart was implemented with Murder Rate on Y-axis and Illiteracy percentage on X-axis. Area of the bubble represents population of the state.  </li>
+                            <li>Bubbles are given different colors base on the region. </li>
+                            <li> Tool tip shows State Name, Population, Murder Rate and Illiteracy percentage </li>
+                        </ul>
+                     </p>
+                <p> Level 2 </p>
+                    <p>
+                        <ul>
+                            <li> Region wise scatter plot matrix was created </li>
+                            <li> Illieracy, Murder Rate, Life Expectancy and percent high-school graduates were used </li>
+                        </ul>
+                    </p>
+                <p> Level 3 </p>
+                    <p>
+                        <ul>
+                            <li> Parallel plot was created for all numerical variables in dataset, for seven regions of US </li>
+                        </ul>
+                    </p>
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+  
+</div>
+
+<hr/>
+
+
+</div><!--/.container -->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/d3.min.js"></script>
+
+<!-- STUDENTS: Remove this after verifying D3 is working. //-->
+<script src="js/testD3.js"></script>
+
+</body>
+</html>
