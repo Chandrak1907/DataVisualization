@@ -694,6 +694,152 @@ svg4.append("g")
 
 
 
+<script>
+
+var bmargin = {top: 10, right: 10, bottom: 100, left: 40},
+    bmargin2 = {top: 430, right: 10, bottom: 20, left: 40},
+    bwidth = 960 - margin.left - margin.right,
+    bheight = 500 - margin.top - margin.bottom,
+    bheight2 = 500 - margin2.top - margin2.bottom;
+
+
+
+var bparseDate = d3.time.format("%Y-%m-%d").parse;
+
+var bx = d3.time.scale().range([0, bwidth]),
+    bx2 = d3.time.scale().range([0, bwidth]),
+    by = d3.scale.linear().range([bheight, 0]),
+    by2 = d3.scale.linear().range([bheight2, 0]);
+
+var bcolor = d3.scale.category10();
+var bxAxis = d3.svg.axis().scale(x).orient("bottom"),
+    bxAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+    byAxis = d3.svg.axis().scale(y).orient("left");
+
+var brush = d3.svg.brush()
+    .x(bx2)
+    .on("brush", brushed);
+
+var barea = d3.svg.area()
+    .interpolate("basis")
+    .x(function(d) {
+      console.log("In area",d," -- ",d.values," ++ ",x(d.date),"  == ",y(d.y0));
+     return x(d.date); })
+    .y0(bheight)
+    .y1(function(d) { return y(d.front); });
+
+var barea2 = d3.svg.area()
+    .interpolate("basis")
+    .x(function(d) { return x2(d.date); })
+    .y0(bheight2)
+    .y1(function(d) { return y2(d.front); });
+
+var bsvg = d3.select("body").append("svg")
+    .attr("width", bwidth + margin.left + margin.right)
+    .attr("height", bheight + margin.top + margin.bottom);
+
+svg.append("defs").append("clipPath")
+    .attr("id", "clip")
+  .append("rect")
+    .attr("width", bwidth)
+    .attr("height", bheight);
+
+var bfocus = svg.append("g")
+    .attr("class", "focus")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var bcontext = svg.append("g")
+    .attr("class", "context")
+    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+// Read file
+
+d3.csv("DatavizTs.csv", function(error, data) {
+
+  color.domain(d3.keys(data[0]).filter(function(key) { return key === 'front'; }));
+
+  data.forEach(function(d) {
+    d.date = parseDate(d.time);
+  });
+
+
+  var cities = color.domain().map(function(name) {
+  
+
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {date: d.date, temperature: +d[name]};
+      })
+    };
+  });
+
+console.log("cities", cities);
+
+  data.sort(function(a, b) {
+    return a.date - b.date; });
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+
+  y.domain([
+    // d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+    0,d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
+  ]);
+
+
+// d3.csv("sp500.csv", type, function(error, data) {
+  // x.domain(d3.extent(data.map(function(d) { return d.date; })));
+  // y.domain([0, d3.max(data.map(function(d) { return d.price; }))]);
+  x2.domain(x.domain());
+  y2.domain(y.domain());
+
+  focus.append("path")
+      .datum(data)
+      // .datum(data)
+      .attr("class", "area")
+      .attr("d", barea);
+
+  focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(bxAxis);
+
+  focus.append("g")
+      .attr("class", "y axis")
+      .call(byAxis);
+
+  context.append("path")
+      .datum(data)
+      .attr("class", "area")
+      .attr("d", barea2);
+
+  context.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + bheight2 + ")")
+      .call(bxAxis2);
+
+  context.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+    .selectAll("rect")
+      .attr("y", -6)
+      .attr("height", bheight2 + 7);
+});
+
+function brushed() {
+  x.domain(brush.empty() ? x2.domain() : brush.extent());
+  focus.select(".area").attr("d", barea);
+  focus.select(".x.axis").call(bxAxis);
+}
+
+function type(d) {
+  d.date = parseDate(d.date);
+  d.front = +d.price;
+  return d;
+}
+
+</script>
+
+
 
 
 
