@@ -155,7 +155,7 @@ body {
 <div id ="ToolTip"></div>
 
 
- <script src="http://d3js.org/d3.v3.js"></script>   
+<script src="http://d3js.org/d3.v3.js"></script>   
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
 
 <script>
@@ -266,7 +266,7 @@ var svg4 = d3.select("#ToolTip").append("svg")
 d3.csv("DatavizTs.csv", function(error, data) {
 
   
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "time" && key!= "kms" && key!="PetrolPrice" && key!="VanKilled"&&key!="law"; }));
+  color.domain(d3.keys(data[0]).filter(function(key) { return key === "drivers" || key === "front" && key ==="rear"; }));
 
 
 
@@ -652,7 +652,7 @@ svg4.append("g")
       .on("mousemove", mousemove);
 
   function mousemove() {
-    console.log("In mouse Move ");
+    // console.log("In mouse Move ");
     var x0 = x.invert(d3.mouse(this)[0]),
         i = bisectDate(data, x0, 1),
         d0 = data[i - 1],
