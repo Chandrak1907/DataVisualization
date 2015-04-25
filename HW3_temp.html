@@ -738,17 +738,17 @@ var bsvg = d3.select("body").append("svg")
     .attr("width", bwidth + margin.left + margin.right)
     .attr("height", bheight + margin.top + margin.bottom);
 
-svg.append("defs").append("clipPath")
+bsvg.append("defs").append("clipPath")
     .attr("id", "clip")
   .append("rect")
     .attr("width", bwidth)
     .attr("height", bheight);
 
-var bfocus = svg.append("g")
+var bfocus = bsvg.append("g")
     .attr("class", "focus")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var bcontext = svg.append("g")
+var bcontext = bsvg.append("g")
     .attr("class", "context")
     .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 // Read file
