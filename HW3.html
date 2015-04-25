@@ -266,7 +266,7 @@ var svg4 = d3.select("#ToolTip").append("svg")
 d3.csv("DatavizTs.csv", function(error, data) {
 
   
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "time" && key!= "kms" && key!="PetrolPrice" && key!="VanKilled"&&key!="law"; }));
+  color.domain(d3.keys(data[0]).filter(function(key) { return key != "DriversKilled" &&key !== "time" && key!= "kms" && key!="PetrolPrice" && key!="VanKilled"&&key!="law"; }));
 
 
 
@@ -284,6 +284,7 @@ d3.csv("DatavizTs.csv", function(error, data) {
     };
   }));
 
+  console.log("-- ",cities);
 
   x.domain(d3.extent(data, function(d) { return d.date; }));
 
@@ -674,7 +675,7 @@ svg4.append("g")
 <header> Level 2 - Zoom and Pan </header>
 
 
-<a href="zoomnpan.html">Zoom and Pan</a>
+<a href="zoomnpan.html">Zoom and Pan Functionality on front seat passenger deaths line plot</a>
 
 
 
@@ -692,25 +693,35 @@ svg4.append("g")
         <div class="media">
        
             <div class="media-body">
-                <p> Level 1</p>
+               <p> Data Cleaning </p>
+                <p>
+                  <ul>
+                    <li> From Seatbelts dataset, time series was created using R. Code is available on Github in file named 'Read.R'  </li>
+                    <li>  For Seatbelts dataset in R is in time series format. This is converted to a dataframe and month column is added</li>
+                    <li> Data frame created in above step is exported to csv file </li>
+                  </ul>
+                </p> 
+
+
+                <p> Level 1 - Line Series plot</p>
                     <p> 
                         <ul>
-                            <li>Bubble chart was implemented with Murder Rate on Y-axis and Illiteracy percentage on X-axis. Area of the bubble represents population of the state.  </li>
-                            <li>Bubbles are given different colors base on the region. </li>
-                            <li> Tool tip shows State Name, Population, Murder Rate and Illiteracy percentage </li>
+                            <li> I chose to plot total driver deaths, front seat passengers killed and rear seat passengers killed on multi-line time seris. </li>
+                            <li> Relevant legend is also placed on top of the chart </li>
                         </ul>
                      </p>
+                <p> Level 1 - Stacked area plot </p>
+                    <p>
+                        <ul>
+                            <li> In stacked area plot also, total driver deaths, front seat passengers killed and rear seat passengers killed are shown.  </li>
+                        </ul>
+                    </p>
                 <p> Level 2 </p>
                     <p>
                         <ul>
-                            <li> Region wise scatter plot matrix was created </li>
-                            <li> Illieracy, Murder Rate, Life Expectancy and percent high-school graduates were used </li>
-                        </ul>
-                    </p>
-                <p> Level 3 </p>
-                    <p>
-                        <ul>
-                            <li> Parallel plot was created for all numerical variables in dataset, for seven regions of US </li>
+                            <li> In level-2, I tried to add tool tip, zoom and pan functionalities.  These functionalites were working fine, when separate d3 plots were created. However, when I combine them these functionaties are not working fine </li>
+                            <li> That's why a separate link to zoom and pan chart is shown.</li>
+                          
                         </ul>
                     </p>
                 </p>
