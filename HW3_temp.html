@@ -712,9 +712,9 @@ var bx = d3.time.scale().range([0, bwidth]),
     by2 = d3.scale.linear().range([bheight2, 0]);
 
 var bcolor = d3.scale.category10();
-var bxAxis = d3.svg.axis().scale(x).orient("bottom"),
-    bxAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
-    byAxis = d3.svg.axis().scale(y).orient("left");
+var bxAxis = d3.svg.axis().scale(bx).orient("bottom"),
+    bxAxis2 = d3.svg.axis().scale(bx2).orient("bottom"),
+    byAxis = d3.svg.axis().scale(by).orient("left");
 
 var brush = d3.svg.brush()
     .x(bx2)
