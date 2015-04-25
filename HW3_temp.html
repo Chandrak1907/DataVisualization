@@ -746,11 +746,11 @@ bsvg.append("defs").append("clipPath")
 
 var bfocus = bsvg.append("g")
     .attr("class", "focus")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + bmargin.left + "," + bmargin.top + ")");
 
 var bcontext = bsvg.append("g")
     .attr("class", "context")
-    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+    .attr("transform", "translate(" + bmargin2.left + "," + bmargin2.top + ")");
 // Read file
 
 d3.csv("DatavizTs.csv", function(error, data) {
