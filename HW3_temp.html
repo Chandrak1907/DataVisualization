@@ -789,8 +789,8 @@ console.log("cities", cities);
 // d3.csv("sp500.csv", type, function(error, data) {
   // x.domain(d3.extent(data.map(function(d) { return d.date; })));
   // y.domain([0, d3.max(data.map(function(d) { return d.price; }))]);
-  x2.domain(x.domain());
-  y2.domain(y.domain());
+  bx2.domain(bx.domain());
+  by2.domain(by.domain());
 
   focus.append("path")
       .datum(data)
@@ -800,7 +800,7 @@ console.log("cities", cities);
 
   focus.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + bheight + ")")
       .call(bxAxis);
 
   focus.append("g")
