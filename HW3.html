@@ -266,7 +266,7 @@ var svg4 = d3.select("#ToolTip").append("svg")
 d3.csv("DatavizTs.csv", function(error, data) {
 
   
-  color.domain(d3.keys(data[0]).filter(function(key) { return key === "drivers" || key === "front" && key ==="rear"; }));
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "time" && key!= "kms" && key!="PetrolPrice" && key!="VanKilled"&&key!="law"; }));
 
 
 
