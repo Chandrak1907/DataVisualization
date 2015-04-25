@@ -105,6 +105,11 @@ body {
   stroke-width: 1.5px;
 }
 
+h1 {
+    color:blue;
+    font-family:verdana;
+    font-size:100%;
+}
 
 .d3-tip {
   line-height: 1;
@@ -145,14 +150,14 @@ body {
 
 </style>
 <body>
-  <header> Level 1 - Line Graph </header>
+  <header><h1> Level 1 - Line Graph  - Deaths in Road Accidents in UK</h1> </header>
 <div id="Level1"></div>
-<header> Level 1 - Stacked Area Graph </header>
+<header> <h1>Level 1 - Stacked Area Graph - Cumulative Number of Deaths in Road Accidents in UK </h1></header>
 <div id="Level1Stack"></div>
-<header> Level 2 -  Graph with Zoom </header>
-<div id ="Level1Zoom"></div>
-<header> Level 2 -  Tool tip</header>
-<div id ="ToolTip"></div>
+<!-- <header> Level 2 -  Graph with Zoom </header>
+<div id ="Level1Zoom"></div> -->
+<!-- <header> Level 2 -  Tool tip</header>
+<div id ="ToolTip"></div> -->
 
 
 <script src="http://d3js.org/d3.v3.js"></script>   
@@ -721,6 +726,7 @@ svg4.append("g")
                         <ul>
                             <li> In level-2, I tried to add tool tip, zoom and pan functionalities.  These functionalites were working fine, when separate d3 plots were created. However, when I combine them these functionaties are not working fine </li>
                             <li> That's why a separate link to zoom and pan chart is shown.</li>
+                            <li> In source code, I commented out my tool tip functionality code. </li>
                           
                         </ul>
                     </p>
