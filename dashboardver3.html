@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Testing Pie Chart</title>
+   <script type="text/javascript" src="d3/d3.v2.js"></script>
+     <script src="http://d3js.org/d3.v2.js"></script>
+     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <!-- // <script src="d3.min.js"></script> -->
+	<!-- Note: I made good use of the sample code provided by the D3JS community and extended it to fit my needs to create this simple dashboard -->
+    <style type="text/css">
+
+
+#pieChart {    
+	position:absolute;
+	top:10px;
+	left:10px;
+	width:400px;
+	height: 500px; 
+}
+
+
+
+#lineChart {    
+	position:absolute;
+	top:10px;
+	left:410px;
+	height: 150px;
+}
+
+#barChart {
+	position:absolute;
+	top:160px;
+	left:410px;
+	height: 250px;
+}
+
+.slice {
+   font-size: 12pt;
+   font-family: Verdana;
+   fill: white; //svg specific - instead of color
+   font-weight: bold;	
+  		} 
+
+/*for line chart*/
+.axis path, .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges; //The shape-rendering property is an SVG attribute, used here to make sure our axis and its tick mark lines are pixel-perfect. 
+}
+
+.line {
+  fill: none;
+  /*stroke: steelblue;*/
+  stroke-width: 3px;
+}
+
+.dot {
+  /*fill: white;*/
+  /*stroke: steelblue;*/
+  stroke-width: 1.5px;
+  }
+				
+ 
+.axis text {
+    font-family: Verdana;
+    font-size: 11px;
+}
+
+
+ .axis path,
+ .axis line {
+   fill: none;
+   stroke: #000;
+   shape-rendering: crispEdges;
+ }
+
+
+.title {
+	 font-family: Verdana;
+    font-size: 15px;	
+		
+}
+
+.xAxis {
+    font-family: verdana;
+    font-size: 11px;
+    fill: black;
+}  
+
+.yAxis {
+    font-family: verdana;
+    font-size: 11px;
+    fill: white;
+}
+
+
+.d3-tip {
+  line-height: 1;
+  /*font-weight: bold;*/
+  padding: 8px;
+  background: rgba(0.5, 0, 0.5, 0);
+  color: #843c39;
+  border-radius: 2px;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 80%;
+  left: 0;
+}
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 8px;
+  width: 80%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
+}
+ /* Style northward tooltips differently */
+
+table {
+	border-collapse:collapse;
+	border: 0px;	
+	font-family: Verdana;	
+	color: #5C5558;
+	font-size: 12px;
+	text-align: right;			
+}
+
+td {
+	padding-left: 10px;		
+}
+
+#lineChartTitle1 {
+	font-family: Verdana;
+	font-size  : 14px;
+	fill       : lightgrey;
+	font-weight: bold;
+	text-anchor: middle;
+}
+
+#lineChartTitle2 {
+	font-family: Verdana;
+	font-size  : 72px;
+	fill       : grey;
+	text-anchor: middle;
+	font-weight: bold;
+	/*font-style: italic;*/
+}
+				 
+    </style>
+  </head>
+  <body>
+  
+    <div id="pieChart"></div>
+    <div id="barChart"></div>  
+    <div id="lineChart"></div>
+    <script type="text/javascript">
+    
+/*
+################ FORMATS ##################
+-------------------------------------------
+*/
+
+
+var 	formatAsPercentage = d3.format("%"),
+		formatAsPercentage1Dec = d3.format(".1%"),
+		formatAsInteger = d3.format(","),
+		fsec = d3.time.format("%S s"),
+		fmin = d3.time.format("%M m"),
+		fhou = d3.time.format("%H h"),
+		fwee = d3.time.format("%a"),
+		fdat = d3.time.format("%d d"),
+		fmon = d3.time.format("%b")
+		;
+
+/*
+############# PIE CHART ###################
+-------------------------------------------
+*/
+
+
+
+function dsPieChart(){
+
+	var data = [{category:"Animation",measure:31},{category:"Romance",measure:41},{category:"Documentary",measure:82},{category:"Short",measure:135},{category:"Action",measure:340},{category:"Comedy",measure:713},{category:"Drama",measure:1201}];
+
+	var 	width = 400,
+		   height = 400,
+		   // outerRadius = Math.min(width, height) / 2,
+		   // innerRadius = outerRadius * .999,   
+		   // // for animation
+		   // innerRadiusFinal = outerRadius * .5,
+		   // innerRadiusFinal3 = outerRadius* .45,
+		   color = d3.scale.category20()    //builtin range of colors
+		   ;
+	// ###    
+var basics = dsBarChartBasics();
+	
+	var margin = basics.margin,
+		// width = basics.width,
+	   // height = basics.height,
+		colorBar = basics.colorBar,
+		barPadding = basics.barPadding
+		;
+	var svg = d3.select("#pieChart")
+			.append("svg:svg")
+			.data([data])
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		    .attr("id","piePlot")
+		    .append("svg:g") 
+		    ;
+
+var vis = svg
+		    .append("g")
+		    .attr("transform", "translate(" +0 + "," + margin.top + ")")
+		    ;
+
+// 
+	// var vis = d3.select("#pieChart")
+	//      .append("svg:svg")              //create the SVG element inside the <body>
+	//      .data([data])                   //associate our data with the document
+	//          .attr("width", width)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+	//          .attr("height", height)
+	//      		.append("svg:g")  ;              //make a group to hold our pie chart
+
+
+	 var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+	 var y = d3.scale.linear().range([height-20, 0]);
+
+
+	//          .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+	// 			;
+				
+	// var bar2 = d3.layout.barChart()
+	// .value(function(d) { return d.measure;});
+ //   var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+ //        	.outerRadius(outerRadius).innerRadius(innerRadius);
+   
+ //   // for animation
+ //   var arcFinal = d3.svg.arc().innerRadius(innerRadiusFinal).outerRadius(outerRadius);
+	// var arcFinal3 = d3.svg.arc().innerRadius(innerRadiusFinal3).outerRadius(outerRadius);
+
+ //   var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+ //        .value(function(d) { return d.measure; });    //we must tell it out to access the value of each element in our data array
+
+ //   var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+ //        .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+ //        .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+ //            .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+ //               .attr("class", "slice")    //allow us to style things in the slices (like text)
+ //               .on("mouseover", mouseover)
+ //    				.on("mouseout", mouseout)
+ //    				.on("click", up)
+ //    				;
+    				
+ //        arcs.append("svg:path")
+ //               .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
+ //               .attr("d", arc)     //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+	// 				.append("svg:title") //mouseover title showing the figures
+	// 			   .text(function(d) { return d.data.category + ": " + formatAsPercentage(d.data.measure); });			
+
+ //        d3.selectAll("g.slice").selectAll("path").transition()
+	// 		    .duration(750)
+	// 		    .delay(10)
+	// 		    .attr("d", arcFinal )
+	// 		    ;
+	
+	//   // Add a label to the larger arcs, translated to the arc centroid and rotated.
+	//   // source: http://bl.ocks.org/1305337#index.html
+	//   arcs.filter(function(d) { return d.endAngle - d.startAngle > .2; })
+	//   		.append("svg:text")
+	//       .attr("dy", ".35em")
+	//       .attr("text-anchor", "middle")
+	//       .attr("transform", function(d) { return "translate(" + arcFinal.centroid(d) + ")rotate(" + angle(d) + ")"; })
+	//       //.text(function(d) { return formatAsPercentage(d.value); })
+	//       .text(function(d) { return d.data.category; })
+	//       ;
+	   
+	//    // Computes the label angle of an arc, converting from radians to degrees.
+	// 	function angle(d) {
+	// 	    var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+	// 	    return a > 90 ? a - 180 : a;
+	// 	}
+		    
+		
+	// 	// Pie chart title			
+	// 	vis.append("svg:text")
+	//      	.attr("dy", ".35em")
+	//       .attr("text-anchor", "middle")
+	//       .text("Revenue Share 2012")
+	//       .attr("class","title")
+	      ;		    
+// $$$$$$$$$$$$$$$$
+// var margin = {top: 20, right: 20, bottom: 70, left: 40},
+//     width = 600 - margin.left - margin.right,
+//     height = 300 - margin.top - margin.bottom;
+
+// Parse the date / time
+// var parseDate = d3.time.format("%Y-%m").parse;
+
+
+
+
+
+// var xAxis = d3.vis.axis()
+//     .scale(x)
+//     .orient("bottom");
+//     // .tickFormat(d3.time.format("%Y-%m"));
+
+// var yAxis = d3.vis.axis()
+//     .scale(y)
+//     .orient("left")
+    // .ticks(10);
+var color = d3.scale.category20();
+// var svg = d3.select("body").append("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//   .append("g")
+//     .attr("transform", 
+//           "translate(" + margin.left + "," + margin.top + ")");
+
+// d3.csv("Frequency.csv", function(error, data) {
+
+//   console.log(data);
+//   color.domain(d3.keys(data[0]).filter(function(key) { return  key!=""; }));
+
+
+//     data.forEach(function(d) {
+//         // d.date = parseDate(d.date);
+//         d.freq = +d.freq;
+//     });
+ 
+  x.domain(data.map(function(d) { return d.category; }));
+  y.domain([0, d3.max(data, function(d) { return d.measure; })]);
+
+  // svg.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(xAxis)
+  //   .selectAll("text")
+  //     .style("text-anchor", "end")
+  //     .attr("dx", "-.8em")
+  //     .attr("dy", "-.55em")
+  //     .attr("transform", "rotate(-90)" );
+
+  // svg.append("g")
+  //     .attr("class", "y axis")
+  //     .call(yAxis)
+  //   .append("text")
+  //     .attr("transform", "rotate(-90)")
+  //     .attr("y", 6)
+  //     .attr("dy", ".71em")
+  //     .style("text-anchor", "end")
+  //     .text("Value ($)");
+var selection=[];
+var bar1=  vis.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      // .style("fill", "steelblue")
+      .style("fill", function(d, i) { 
+      	console.log(" color here",color(i));	
+      	return color(i); })
+      .attr("x", function(d) { return x(d.category); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.measure); })
+      .attr("height", function(d) { return height - y(d.measure); })
+      .on('click', function(d,i) {
+      	console.log("in click function",color(i));
+      	// console.log(" in click function", selection.indexOf(d),color);
+        if(selection.indexOf(d) == -1) { selection.push(d); }
+        else { selection.splice(selection.indexOf(d), 1); }
+        up(d,(i))});
+      // .on("click",up);
+
+// });
+
+
+
+// $$$$$$$$$$$$$
+
+	svg.append("text")
+		.attr("x", (width )/2)
+		.attr("y", 15)
+		.attr("class","title")				
+		.attr("text-anchor", "middle")
+		.text("Genrewise Movie Count")
+		;
+
+	var yScale = d3.scale.linear()
+			// use the max funtion to derive end point of the domain (max value of the dataset)
+			// do not use the min value of the dataset as min of the domain as otherwise you will not see the first bar
+		   .domain([0, d3.max(data, function(d) { return d.measure; })])
+		   // As coordinates are always defined from the top left corner, the y position of the bar
+		   // is the svg height minus the data value. So you basically draw the bar starting from the top. 
+		   // To have the y position calculated by the range function
+		   .range([height, 0])
+		   ;
+	
+
+	vis.selectAll("text")
+	.data(data)
+	.enter()
+	.append("text")
+	.text(function(d) {
+			return formatAsInteger(d3.round(d.measure));
+	})
+	.attr("text-anchor", "top")
+	// Set x position to the left edge of each bar plus half the bar width
+	.attr("x", function(d, i) {
+			return (i * (width / data.length)) + ((width / data.length - 5) / 2);
+	})
+	.attr("y", function(d) {
+			return yScale(d.measure) +8;
+	})
+	.attr("class", "yAxis")
+	.attr("color","red");
+
+
+
+		
+	function mouseover() {
+
+		console.log("in mouse over");
+		d3.select("this").select("path").transition()
+// .duration(50)
+		.attr("fil", "blue");
+	}
+		// bar1.attr("fill","gray");
+		
+		//  .fill("gray")
+  //         .attr('stroke-width',3);
+	 //  // d3.select(this).select("path").transition()
+	//   //     .duration(750)
+	//       .select(".bar").transition().duration(100).style("fill-opacity", .5)
+	//         		.attr("stroke","red")
+	//         		.attr("stroke-width", 1.5)
+	//         		// .attr("d", d)
+	//         		;
+	// }
+	
+	function mouseout() {
+	  d3.select(this).select("path").transition()
+	      .duration(750)
+	        		//.attr("stroke","blue")
+	        		//.attr("stroke-width", 1.5)
+	        		.attr("d", arcFinal)
+	        		;
+	}
+	
+	function up(d, i) {
+					
+					console.log("gadss",d);
+				/* update bar chart when user selects piece of the pie chart */
+				//updateBarChart(dataset[i].category);
+				updateBarChart(d.category, color(i));
+				updateLineChart(d.category, color(i));
+			 
+	}
+}
+
+dsPieChart();
+
+/*
+############# BAR CHART ###################
+-------------------------------------------
+*/
+
+
+
+var datasetBarChart =
+[{group:"Action",category:"Low-Q1",measure:6.7636363636},{group:"Action",category:"Q1-Median",measure:5.0707692308},{group:"Action",category:"Median-Mean",measure:5.3059701493},{group:"Action",category:"Mean-Q3",measure:5.5625},{group:"Action",category:"Q3 to Max",measure:5.6476190476},{group:"Animation",category:"Low-Q1",measure:7.6},{group:"Animation",category:"Q1-Median",measure:6.875},{group:"Animation",category:"Median-Mean",measure:6.3333333333},{group:"Animation",category:"Mean-Q3",measure:0.0},{group:"Animation",category:"Q3 to Max",measure:6.5875},{group:"Comedy",category:"Low-Q1",measure:5.8836734694},{group:"Comedy",category:"Q1-Median",measure:5.8677631579},{group:"Comedy",category:"Median-Mean",measure:5.6897590361},{group:"Comedy",category:"Mean-Q3",measure:6.075},{group:"Comedy",category:"Q3 to Max",measure:5.358045977},{group:"Documentary",category:"Low-Q1",measure:6.0555555556},{group:"Documentary",category:"Q1-Median",measure:7.2203389831},{group:"Documentary",category:"Median-Mean",measure:6.0},{group:"Documentary",category:"Mean-Q3",measure:0.0},{group:"Documentary",category:"Q3 to Max",measure:0.0},{group:"Drama",category:"Low-Q1",measure:6.2955223881},{group:"Drama",category:"Q1-Median",measure:6.4103825137},{group:"Drama",category:"Median-Mean",measure:6.5929487179},{group:"Drama",category:"Mean-Q3",measure:6.7142857143},{group:"Drama",category:"Q3 to Max",measure:6.6932773109},{group:"Romance",category:"Low-Q1",measure:5.775},{group:"Romance",category:"Q1-Median",measure:7.0666666667},{group:"Romance",category:"Median-Mean",measure:6.6428571429},{group:"Romance",category:"Mean-Q3",measure:0.0},{group:"Romance",category:"Q3 to Max",measure:5.5},{group:"Short",category:"Low-Q1",measure:7.0836363636},{group:"Short",category:"Q1-Median",measure:7.2956521739},{group:"Short",category:"Median-Mean",measure:0.0},{group:"Short",category:"Mean-Q3",measure:0.0},{group:"Short",category:"Q3 to Max",measure:6.5}];
+// set initial group value
+var group = "Action";
+
+function datasetBarChosen(group) {
+	var ds = [];
+	for (x in datasetBarChart) {
+		 if(datasetBarChart[x].group==group){
+		 	ds.push(datasetBarChart[x]);
+		 } 
+		}
+	return ds;
+}
+
+
+function dsBarChartBasics() {
+
+		var margin = {top: 30, right: 5, bottom: 20, left: 50},
+		width = 500 - margin.left - margin.right,
+	   height = 250 - margin.top - margin.bottom,
+		colorBar = d3.scale.category20(),
+		barPadding = 1
+		;
+		
+		return {
+			margin : margin, 
+			width : width, 
+			height : height, 
+			colorBar : colorBar, 
+			barPadding : barPadding
+		}			
+		;
+}
+
+function dsBarChart() {
+
+	var firstDatasetBarChart = datasetBarChosen(group);         	
+	
+	var basics = dsBarChartBasics();
+	
+	var margin = basics.margin,
+		width = basics.width,
+	   height = basics.height,
+		colorBar = basics.colorBar,
+		barPadding = basics.barPadding
+		;
+					
+	var 	xScale = d3.scale.linear()
+						.domain([0, firstDatasetBarChart.length])
+						.range([0, width])
+						;
+						
+	// Create linear y scale 
+	// Purpose: No matter what the data is, the bar should fit into the svg area; bars should not
+	// get higher than the svg height. Hence incoming data needs to be scaled to fit into the svg area.  
+	var yScale = d3.scale.linear()
+			// use the max funtion to derive end point of the domain (max value of the dataset)
+			// do not use the min value of the dataset as min of the domain as otherwise you will not see the first bar
+		   .domain([0, d3.max(firstDatasetBarChart, function(d) { return d.measure; })])
+		   // As coordinates are always defined from the top left corner, the y position of the bar
+		   // is the svg height minus the data value. So you basically draw the bar starting from the top. 
+		   // To have the y position calculated by the range function
+		   .range([height, 0])
+		   ;
+	
+	//Create SVG element
+	
+	var svg = d3.select("#barChart")
+			.append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		    .attr("id","barChartPlot")
+		    ;
+	
+	var plot = svg
+		    .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+		    ;
+	            
+	plot.selectAll("rect")
+		   .data(firstDatasetBarChart)
+		   .enter()
+		   .append("rect")
+			.attr("x", function(d, i) {
+			    return xScale(i);
+			})
+		   .attr("width", width / firstDatasetBarChart.length - barPadding)   
+			.attr("y", function(d) {
+			    return yScale(d.measure);
+			})  
+			.attr("height", function(d) {
+			    return height-yScale(d.measure);
+			})
+			.attr("fill", "green")
+			;
+	
+		
+	// Add y labels to plot	
+	
+	plot.selectAll("text")
+	.data(firstDatasetBarChart)
+	.enter()
+	.append("text")
+	.text(function(d) {
+			return formatAsInteger(d3.round(d.measure));
+	})
+	.attr("text-anchor", "middle")
+	// Set x position to the left edge of each bar plus half the bar width
+	.attr("x", function(d, i) {
+			return (i * (width / firstDatasetBarChart.length)) + ((width / firstDatasetBarChart.length - barPadding) / 2);
+	})
+	.attr("y", function(d) {
+			return yScale(d.measure) + 14;
+	})
+	.attr("class", "yAxis")
+	/* moved to CSS			   
+	.attr("font-family", "sans-serif")
+	.attr("font-size", "11px")
+	.attr("fill", "white")
+	*/
+	;
+	
+	// Add x labels to chart	
+	
+	var xLabels = svg
+		    .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + (margin.top + height)  + ")")
+		    ;
+	
+	xLabels.selectAll("text.xAxis")
+		  .data(firstDatasetBarChart)
+		  .enter()
+		  .append("text")
+		  .text(function(d) { return d.category;})
+		  .attr("text-anchor", "middle")
+			// Set x position to the left edge of each bar plus half the bar width
+						   .attr("x", function(d, i) {
+						   		return (i * (width / firstDatasetBarChart.length)) + ((width / firstDatasetBarChart.length - barPadding) / 2);
+						   })
+		  .attr("y", 15)
+		  .attr("class", "xAxis")
+		  //.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
+		  ;			
+	 
+	// Title
+	
+	svg.append("text")
+		.attr("x", (width + margin.left + margin.right)/2)
+		.attr("y", 15)
+		.attr("class","title")				
+		.attr("text-anchor", "middle")
+		.text("Action Movie Ratings - Budget wise")
+		;
+}
+
+dsBarChart();
+
+ /* ** UPDATE CHART ** */
+ 
+/* updates bar chart on request */
+
+function updateBarChart(group, colorChosen) {
+	
+		var currentDatasetBarChart = datasetBarChosen(group);
+		
+		var basics = dsBarChartBasics();
+	
+		var margin = basics.margin,
+			width = basics.width,
+		   height = basics.height,
+			colorBar = basics.colorBar,
+			barPadding = basics.barPadding
+			;
+		
+		var 	xScale = d3.scale.linear()
+			.domain([0, currentDatasetBarChart.length])
+			.range([0, width])
+			;
+		
+			
+		var yScale = d3.scale.linear()
+	      .domain([0, d3.max(currentDatasetBarChart, function(d) { return d.measure; })])
+	      .range([height,0])
+	      ;
+	      
+	   var svg = d3.select("#barChart svg");
+	      
+	   var plot = d3.select("#barChartPlot")
+	   	.datum(currentDatasetBarChart)
+		   ;
+	
+	  		/* Note that here we only have to select the elements - no more appending! */
+	  	plot.selectAll("rect")
+	      .data(currentDatasetBarChart)
+	      .transition()
+			.duration(750)
+			.attr("x", function(d, i) {
+			    return xScale(i);
+			})
+		   .attr("width", width / currentDatasetBarChart.length - barPadding)   
+			.attr("y", function(d) {
+			    return yScale(d.measure);
+			})  
+			.attr("height", function(d) {
+			    return height-yScale(d.measure);
+			})
+			.attr("fill", colorChosen)
+			;
+		
+		plot.selectAll("text.yAxis") // target the text element(s) which has a yAxis class defined
+			.data(currentDatasetBarChart)
+			.transition()
+			.duration(750)
+		   .attr("text-anchor", "middle")
+		   .attr("x", function(d, i) {
+		   		return (i * (width / currentDatasetBarChart.length)) + ((width / currentDatasetBarChart.length - barPadding) / 2);
+		   })
+		   .attr("y", function(d) {
+		   		return yScale(d.measure) + 14;
+		   })
+		   .text(function(d) {
+				return formatAsInteger(d3.round(d.measure));
+		   })
+		   .attr("class", "yAxis")					 
+		;
+		
+
+		svg.selectAll("text.title") // target the text element(s) which has a title class defined
+			.attr("x", (width + margin.left + margin.right)/2)
+			.attr("y", 15)
+			.attr("class","title")				
+			.attr("text-anchor", "middle")
+			.text(group + "'Movie Ratings - Budget wise")
+		;
+}
+
+
+/*
+############# LINE CHART ##################
+-------------------------------------------
+*/
+
+var datasetLineChart = 
+[{group:"Action",category:1912,measure:0.0},{group:"Action",category:1913,measure:0.0},{group:"Action",category:1914,measure:0.0},{group:"Action",category:1915,measure:0.0},{group:"Action",category:1916,measure:105.0},{group:"Action",category:1917,measure:0.0},{group:"Action",category:1918,measure:0.0},{group:"Action",category:1919,measure:0.0},{group:"Action",category:1921,measure:0.0},{group:"Action",category:1922,measure:0.0},{group:"Action",category:1923,measure:0.0},{group:"Action",category:1924,measure:139.0},{group:"Action",category:1925,measure:0.0},{group:"Action",category:1926,measure:0.0},{group:"Action",category:1927,measure:0.0},{group:"Action",category:1928,measure:0.0},{group:"Action",category:1929,measure:0.0},{group:"Action",category:1930,measure:0.0},{group:"Action",category:1931,measure:0.0},{group:"Action",category:1932,measure:0.0},{group:"Action",category:1933,measure:0.0},{group:"Action",category:1934,measure:104.0},{group:"Action",category:1935,measure:0.0},{group:"Action",category:1936,measure:0.0},{group:"Action",category:1937,measure:68.0},{group:"Action",category:1938,measure:83.0},{group:"Action",category:1939,measure:211.0},{group:"Action",category:1940,measure:0.0},{group:"Action",category:1941,measure:0.0},{group:"Action",category:1942,measure:0.0},{group:"Action",category:1943,measure:0.0},{group:"Action",category:1944,measure:0.0},{group:"Action",category:1945,measure:0.0},{group:"Action",category:1946,measure:0.0},{group:"Action",category:1947,measure:0.0},{group:"Action",category:1948,measure:68.0},{group:"Action",category:1949,measure:0.0},{group:"Action",category:1950,measure:0.0},{group:"Action",category:1951,measure:0.0},{group:"Action",category:1952,measure:167.0},{group:"Action",category:1953,measure:0.0},{group:"Action",category:1954,measure:0.0},{group:"Action",category:1955,measure:0.0},{group:"Action",category:1956,measure:111.0},{group:"Action",category:1957,measure:0.0},{group:"Action",category:1958,measure:101.0},{group:"Action",category:1959,measure:72.0},{group:"Action",category:1960,measure:0.0},{group:"Action",category:1961,measure:0.0},{group:"Action",category:1962,measure:110.0},{group:"Action",category:1963,measure:104.0},{group:"Action",category:1964,measure:114.6666666667},{group:"Action",category:1965,measure:130.0},{group:"Action",category:1966,measure:0.0},{group:"Action",category:1967,measure:117.0},{group:"Action",category:1968,measure:96.5},{group:"Action",category:1969,measure:179.0},{group:"Action",category:1970,measure:0.0},{group:"Action",category:1971,measure:120.0},{group:"Action",category:1972,measure:89.0},{group:"Action",category:1973,measure:110.0},{group:"Action",category:1974,measure:0.0},{group:"Action",category:1975,measure:99.0},{group:"Action",category:1976,measure:94.6666666667},{group:"Action",category:1977,measure:124.0},{group:"Action",category:1978,measure:136.3333333333},{group:"Action",category:1979,measure:98.5},{group:"Action",category:1980,measure:116.0},{group:"Action",category:1981,measure:103.7142857143},{group:"Action",category:1982,measure:114.1666666667},{group:"Action",category:1983,measure:121.5},{group:"Action",category:1984,measure:140.75},{group:"Action",category:1985,measure:96.0},{group:"Action",category:1986,measure:104.6666666667},{group:"Action",category:1987,measure:107.2},{group:"Action",category:1988,measure:102.5},{group:"Action",category:1989,measure:104.1},{group:"Action",category:1990,measure:102.0},{group:"Action",category:1991,measure:99.3333333333},{group:"Action",category:1992,measure:99.4},{group:"Action",category:1993,measure:98.8571428571},{group:"Action",category:1994,measure:110.1111111111},{group:"Action",category:1995,measure:106.8571428571},{group:"Action",category:1996,measure:105.0909090909},{group:"Action",category:1997,measure:101.52},{group:"Action",category:1998,measure:103.15},{group:"Action",category:1999,measure:103.8461538462},{group:"Action",category:2000,measure:106.6875},{group:"Action",category:2001,measure:103.9444444444},{group:"Action",category:2002,measure:105.1666666667},{group:"Action",category:2003,measure:114.56},{group:"Action",category:2004,measure:107.6923076923},{group:"Action",category:2005,measure:104.25},{group:"Animation",category:1912,measure:0.0},{group:"Animation",category:1913,measure:0.0},{group:"Animation",category:1914,measure:0.0},{group:"Animation",category:1915,measure:0.0},{group:"Animation",category:1916,measure:0.0},{group:"Animation",category:1917,measure:0.0},{group:"Animation",category:1918,measure:0.0},{group:"Animation",category:1919,measure:0.0},{group:"Animation",category:1921,measure:0.0},{group:"Animation",category:1922,measure:0.0},{group:"Animation",category:1923,measure:0.0},{group:"Animation",category:1924,measure:0.0},{group:"Animation",category:1925,measure:0.0},{group:"Animation",category:1926,measure:0.0},{group:"Animation",category:1927,measure:0.0},{group:"Animation",category:1928,measure:0.0},{group:"Animation",category:1929,measure:0.0},{group:"Animation",category:1930,measure:0.0},{group:"Animation",category:1931,measure:0.0},{group:"Animation",category:1932,measure:0.0},{group:"Animation",category:1933,measure:0.0},{group:"Animation",category:1934,measure:0.0},{group:"Animation",category:1935,measure:0.0},{group:"Animation",category:1936,measure:0.0},{group:"Animation",category:1937,measure:0.0},{group:"Animation",category:1938,measure:0.0},{group:"Animation",category:1939,measure:0.0},{group:"Animation",category:1940,measure:84.0},{group:"Animation",category:1941,measure:0.0},{group:"Animation",category:1942,measure:0.0},{group:"Animation",category:1943,measure:0.0},{group:"Animation",category:1944,measure:0.0},{group:"Animation",category:1945,measure:0.0},{group:"Animation",category:1946,measure:0.0},{group:"Animation",category:1947,measure:0.0},{group:"Animation",category:1948,measure:0.0},{group:"Animation",category:1949,measure:0.0},{group:"Animation",category:1950,measure:74.0},{group:"Animation",category:1951,measure:0.0},{group:"Animation",category:1952,measure:0.0},{group:"Animation",category:1953,measure:76.0},{group:"Animation",category:1954,measure:0.0},{group:"Animation",category:1955,measure:0.0},{group:"Animation",category:1956,measure:93.0},{group:"Animation",category:1957,measure:0.0},{group:"Animation",category:1958,measure:0.0},{group:"Animation",category:1959,measure:0.0},{group:"Animation",category:1960,measure:0.0},{group:"Animation",category:1961,measure:0.0},{group:"Animation",category:1962,measure:0.0},{group:"Animation",category:1963,measure:0.0},{group:"Animation",category:1964,measure:0.0},{group:"Animation",category:1965,measure:0.0},{group:"Animation",category:1966,measure:0.0},{group:"Animation",category:1967,measure:0.0},{group:"Animation",category:1968,measure:0.0},{group:"Animation",category:1969,measure:0.0},{group:"Animation",category:1970,measure:0.0},{group:"Animation",category:1971,measure:139.0},{group:"Animation",category:1972,measure:0.0},{group:"Animation",category:1973,measure:0.0},{group:"Animation",category:1974,measure:0.0},{group:"Animation",category:1975,measure:0.0},{group:"Animation",category:1976,measure:0.0},{group:"Animation",category:1977,measure:105.0},{group:"Animation",category:1978,measure:132.0},{group:"Animation",category:1979,measure:0.0},{group:"Animation",category:1980,measure:0.0},{group:"Animation",category:1981,measure:0.0},{group:"Animation",category:1982,measure:0.0},{group:"Animation",category:1983,measure:84.0},{group:"Animation",category:1984,measure:100.0},{group:"Animation",category:1985,measure:80.0},{group:"Animation",category:1986,measure:0.0},{group:"Animation",category:1987,measure:0.0},{group:"Animation",category:1988,measure:0.0},{group:"Animation",category:1989,measure:0.0},{group:"Animation",category:1990,measure:0.0},{group:"Animation",category:1991,measure:0.0},{group:"Animation",category:1992,measure:0.0},{group:"Animation",category:1993,measure:76.0},{group:"Animation",category:1994,measure:0.0},{group:"Animation",category:1995,measure:0.0},{group:"Animation",category:1996,measure:79.0},{group:"Animation",category:1997,measure:94.0},{group:"Animation",category:1998,measure:75.0},{group:"Animation",category:1999,measure:83.0},{group:"Animation",category:2000,measure:82.0},{group:"Animation",category:2001,measure:75.0},{group:"Animation",category:2002,measure:76.6666666667},{group:"Animation",category:2003,measure:86.0},{group:"Animation",category:2004,measure:86.0},{group:"Animation",category:2005,measure:76.5},{group:"Comedy",category:1912,measure:0.0},{group:"Comedy",category:1913,measure:0.0},{group:"Comedy",category:1914,measure:82.0},{group:"Comedy",category:1915,measure:0.0},{group:"Comedy",category:1916,measure:0.0},{group:"Comedy",category:1917,measure:0.0},{group:"Comedy",category:1918,measure:0.0},{group:"Comedy",category:1919,measure:0.0},{group:"Comedy",category:1921,measure:0.0},{group:"Comedy",category:1922,measure:60.0},{group:"Comedy",category:1923,measure:0.0},{group:"Comedy",category:1924,measure:83.5},{group:"Comedy",category:1925,measure:82.0},{group:"Comedy",category:1926,measure:0.0},{group:"Comedy",category:1927,measure:0.0},{group:"Comedy",category:1928,measure:75.0},{group:"Comedy",category:1929,measure:98.0},{group:"Comedy",category:1930,measure:93.0},{group:"Comedy",category:1931,measure:60.0},{group:"Comedy",category:1932,measure:91.0},{group:"Comedy",category:1933,measure:72.8571428571},{group:"Comedy",category:1934,measure:85.0},{group:"Comedy",category:1935,measure:76.5},{group:"Comedy",category:1936,measure:89.2},{group:"Comedy",category:1937,measure:86.0},{group:"Comedy",category:1938,measure:82.3333333333},{group:"Comedy",category:1939,measure:0.0},{group:"Comedy",category:1940,measure:122.0},{group:"Comedy",category:1941,measure:96.0},{group:"Comedy",category:1942,measure:79.3333333333},{group:"Comedy",category:1943,measure:92.25},{group:"Comedy",category:1944,measure:100.3333333333},{group:"Comedy",category:1945,measure:0.0},{group:"Comedy",category:1946,measure:110.0},{group:"Comedy",category:1947,measure:102.5},{group:"Comedy",category:1948,measure:111.6666666667},{group:"Comedy",category:1949,measure:100.0},{group:"Comedy",category:1950,measure:0.0},{group:"Comedy",category:1951,measure:84.5},{group:"Comedy",category:1952,measure:76.75},{group:"Comedy",category:1953,measure:96.0},{group:"Comedy",category:1954,measure:0.0},{group:"Comedy",category:1955,measure:104.75},{group:"Comedy",category:1956,measure:175.0},{group:"Comedy",category:1957,measure:100.0},{group:"Comedy",category:1958,measure:82.0},{group:"Comedy",category:1959,measure:68.3333333333},{group:"Comedy",category:1960,measure:88.75},{group:"Comedy",category:1961,measure:97.5},{group:"Comedy",category:1962,measure:71.6666666667},{group:"Comedy",category:1963,measure:94.5},{group:"Comedy",category:1964,measure:101.6666666667},{group:"Comedy",category:1965,measure:85.0},{group:"Comedy",category:1966,measure:96.8333333333},{group:"Comedy",category:1967,measure:124.5},{group:"Comedy",category:1968,measure:94.6666666667},{group:"Comedy",category:1969,measure:102.2857142857},{group:"Comedy",category:1970,measure:93.0},{group:"Comedy",category:1971,measure:90.4},{group:"Comedy",category:1972,measure:85.6666666667},{group:"Comedy",category:1973,measure:86.5},{group:"Comedy",category:1974,measure:94.0},{group:"Comedy",category:1975,measure:96.75},{group:"Comedy",category:1976,measure:101.3333333333},{group:"Comedy",category:1977,measure:89.6666666667},{group:"Comedy",category:1978,measure:99.0},{group:"Comedy",category:1979,measure:105.5},{group:"Comedy",category:1980,measure:101.1428571429},{group:"Comedy",category:1981,measure:94.2727272727},{group:"Comedy",category:1982,measure:100.8571428571},{group:"Comedy",category:1983,measure:96.8571428571},{group:"Comedy",category:1984,measure:92.3333333333},{group:"Comedy",category:1985,measure:93.5263157895},{group:"Comedy",category:1986,measure:99.3333333333},{group:"Comedy",category:1987,measure:92.1666666667},{group:"Comedy",category:1988,measure:94.9473684211},{group:"Comedy",category:1989,measure:94.7777777778},{group:"Comedy",category:1990,measure:98.8571428571},{group:"Comedy",category:1991,measure:91.8181818182},{group:"Comedy",category:1992,measure:99.8},{group:"Comedy",category:1993,measure:90.8888888889},{group:"Comedy",category:1994,measure:88.4666666667},{group:"Comedy",category:1995,measure:94.3076923077},{group:"Comedy",category:1996,measure:95.2857142857},{group:"Comedy",category:1997,measure:93.1739130435},{group:"Comedy",category:1998,measure:94.3793103448},{group:"Comedy",category:1999,measure:94.7954545455},{group:"Comedy",category:2000,measure:96.7},{group:"Comedy",category:2001,measure:93.5581395349},{group:"Comedy",category:2002,measure:92.1538461538},{group:"Comedy",category:2003,measure:90.6382978723},{group:"Comedy",category:2004,measure:97.0},{group:"Comedy",category:2005,measure:94.7777777778},{group:"Documentary",category:1912,measure:0.0},{group:"Documentary",category:1913,measure:0.0},{group:"Documentary",category:1914,measure:0.0},{group:"Documentary",category:1915,measure:0.0},{group:"Documentary",category:1916,measure:0.0},{group:"Documentary",category:1917,measure:0.0},{group:"Documentary",category:1918,measure:0.0},{group:"Documentary",category:1919,measure:0.0},{group:"Documentary",category:1921,measure:0.0},{group:"Documentary",category:1922,measure:79.0},{group:"Documentary",category:1923,measure:0.0},{group:"Documentary",category:1924,measure:0.0},{group:"Documentary",category:1925,measure:0.0},{group:"Documentary",category:1926,measure:0.0},{group:"Documentary",category:1927,measure:0.0},{group:"Documentary",category:1928,measure:0.0},{group:"Documentary",category:1929,measure:0.0},{group:"Documentary",category:1930,measure:0.0},{group:"Documentary",category:1931,measure:0.0},{group:"Documentary",category:1932,measure:0.0},{group:"Documentary",category:1933,measure:0.0},{group:"Documentary",category:1934,measure:0.0},{group:"Documentary",category:1935,measure:0.0},{group:"Documentary",category:1936,measure:0.0},{group:"Documentary",category:1937,measure:0.0},{group:"Documentary",category:1938,measure:0.0},{group:"Documentary",category:1939,measure:0.0},{group:"Documentary",category:1940,measure:0.0},{group:"Documentary",category:1941,measure:0.0},{group:"Documentary",category:1942,measure:0.0},{group:"Documentary",category:1943,measure:0.0},{group:"Documentary",category:1944,measure:0.0},{group:"Documentary",category:1945,measure:0.0},{group:"Documentary",category:1946,measure:0.0},{group:"Documentary",category:1947,measure:0.0},{group:"Documentary",category:1948,measure:0.0},{group:"Documentary",category:1949,measure:0.0},{group:"Documentary",category:1950,measure:0.0},{group:"Documentary",category:1951,measure:0.0},{group:"Documentary",category:1952,measure:0.0},{group:"Documentary",category:1953,measure:0.0},{group:"Documentary",category:1954,measure:0.0},{group:"Documentary",category:1955,measure:0.0},{group:"Documentary",category:1956,measure:0.0},{group:"Documentary",category:1957,measure:81.0},{group:"Documentary",category:1958,measure:0.0},{group:"Documentary",category:1959,measure:0.0},{group:"Documentary",category:1960,measure:0.0},{group:"Documentary",category:1961,measure:0.0},{group:"Documentary",category:1962,measure:0.0},{group:"Documentary",category:1963,measure:72.0},{group:"Documentary",category:1964,measure:0.0},{group:"Documentary",category:1965,measure:0.0},{group:"Documentary",category:1966,measure:60.0},{group:"Documentary",category:1967,measure:0.0},{group:"Documentary",category:1968,measure:0.0},{group:"Documentary",category:1969,measure:75.0},{group:"Documentary",category:1970,measure:216.0},{group:"Documentary",category:1971,measure:0.0},{group:"Documentary",category:1972,measure:0.0},{group:"Documentary",category:1973,measure:0.0},{group:"Documentary",category:1974,measure:0.0},{group:"Documentary",category:1975,measure:0.0},{group:"Documentary",category:1976,measure:0.0},{group:"Documentary",category:1977,measure:0.0},{group:"Documentary",category:1978,measure:55.0},{group:"Documentary",category:1979,measure:101.0},{group:"Documentary",category:1980,measure:0.0},{group:"Documentary",category:1981,measure:100.0},{group:"Documentary",category:1982,measure:59.0},{group:"Documentary",category:1983,measure:0.0},{group:"Documentary",category:1984,measure:0.0},{group:"Documentary",category:1985,measure:114.0},{group:"Documentary",category:1986,measure:0.0},{group:"Documentary",category:1987,measure:0.0},{group:"Documentary",category:1988,measure:86.5},{group:"Documentary",category:1989,measure:117.0},{group:"Documentary",category:1990,measure:71.0},{group:"Documentary",category:1991,measure:114.0},{group:"Documentary",category:1992,measure:0.0},{group:"Documentary",category:1993,measure:0.0},{group:"Documentary",category:1994,measure:132.0},{group:"Documentary",category:1995,measure:91.0},{group:"Documentary",category:1996,measure:50.0},{group:"Documentary",category:1997,measure:90.5},{group:"Documentary",category:1998,measure:83.6666666667},{group:"Documentary",category:1999,measure:103.0},{group:"Documentary",category:2000,measure:60.0},{group:"Documentary",category:2001,measure:85.4285714286},{group:"Documentary",category:2002,measure:81.8},{group:"Documentary",category:2003,measure:65.4545454545},{group:"Documentary",category:2004,measure:83.88},{group:"Documentary",category:2005,measure:88.0},{group:"Drama",category:1912,measure:55.0},{group:"Drama",category:1913,measure:88.0},{group:"Drama",category:1914,measure:98.3333333333},{group:"Drama",category:1915,measure:92.0},{group:"Drama",category:1916,measure:197.0},{group:"Drama",category:1917,measure:114.3333333333},{group:"Drama",category:1918,measure:86.0},{group:"Drama",category:1919,measure:50.0},{group:"Drama",category:1921,measure:150.0},{group:"Drama",category:1922,measure:206.3333333333},{group:"Drama",category:1923,measure:106.6},{group:"Drama",category:1924,measure:0.0},{group:"Drama",category:1925,measure:96.3333333333},{group:"Drama",category:1926,measure:90.6666666667},{group:"Drama",category:1927,measure:149.5},{group:"Drama",category:1928,measure:90.3333333333},{group:"Drama",category:1929,measure:79.0},{group:"Drama",category:1930,measure:108.0},{group:"Drama",category:1931,measure:88.25},{group:"Drama",category:1932,measure:82.1428571429},{group:"Drama",category:1933,measure:74.2222222222},{group:"Drama",category:1934,measure:85.2},{group:"Drama",category:1935,measure:87.2222222222},{group:"Drama",category:1936,measure:83.0},{group:"Drama",category:1937,measure:102.4},{group:"Drama",category:1938,measure:105.0},{group:"Drama",category:1939,measure:101.125},{group:"Drama",category:1940,measure:85.6666666667},{group:"Drama",category:1941,measure:95.8571428571},{group:"Drama",category:1942,measure:131.0},{group:"Drama",category:1943,measure:108.6},{group:"Drama",category:1944,measure:120.5},{group:"Drama",category:1945,measure:99.3333333333},{group:"Drama",category:1946,measure:109.0},{group:"Drama",category:1947,measure:97.4},{group:"Drama",category:1948,measure:101.0},{group:"Drama",category:1949,measure:105.5},{group:"Drama",category:1950,measure:89.25},{group:"Drama",category:1951,measure:108.7142857143},{group:"Drama",category:1952,measure:103.3333333333},{group:"Drama",category:1953,measure:93.625},{group:"Drama",category:1954,measure:116.375},{group:"Drama",category:1955,measure:109.375},{group:"Drama",category:1956,measure:130.5},{group:"Drama",category:1957,measure:97.8461538462},{group:"Drama",category:1958,measure:94.1666666667},{group:"Drama",category:1959,measure:124.2857142857},{group:"Drama",category:1960,measure:102.8},{group:"Drama",category:1961,measure:118.4285714286},{group:"Drama",category:1962,measure:126.6363636364},{group:"Drama",category:1963,measure:106.875},{group:"Drama",category:1964,measure:120.4285714286},{group:"Drama",category:1965,measure:123.0},{group:"Drama",category:1966,measure:133.0},{group:"Drama",category:1967,measure:101.4615384615},{group:"Drama",category:1968,measure:127.75},{group:"Drama",category:1969,measure:111.4444444444},{group:"Drama",category:1970,measure:110.4375},{group:"Drama",category:1971,measure:106.5},{group:"Drama",category:1972,measure:129.6666666667},{group:"Drama",category:1973,measure:109.4},{group:"Drama",category:1974,measure:124.0},{group:"Drama",category:1975,measure:108.3333333333},{group:"Drama",category:1976,measure:130.7272727273},{group:"Drama",category:1977,measure:114.6666666667},{group:"Drama",category:1978,measure:116.0},{group:"Drama",category:1979,measure:107.8333333333},{group:"Drama",category:1980,measure:127.9},{group:"Drama",category:1981,measure:125.5714285714},{group:"Drama",category:1982,measure:118.0},{group:"Drama",category:1983,measure:116.4166666667},{group:"Drama",category:1984,measure:133.5},{group:"Drama",category:1985,measure:105.5714285714},{group:"Drama",category:1986,measure:104.4117647059},{group:"Drama",category:1987,measure:123.1818181818},{group:"Drama",category:1988,measure:108.2352941176},{group:"Drama",category:1989,measure:109.0909090909},{group:"Drama",category:1990,measure:134.2},{group:"Drama",category:1991,measure:115.4285714286},{group:"Drama",category:1992,measure:116.9375},{group:"Drama",category:1993,measure:126.6315789474},{group:"Drama",category:1994,measure:106.8},{group:"Drama",category:1995,measure:120.92},{group:"Drama",category:1996,measure:111.625},{group:"Drama",category:1997,measure:117.5294117647},{group:"Drama",category:1998,measure:106.8333333333},{group:"Drama",category:1999,measure:114.8611111111},{group:"Drama",category:2000,measure:114.1379310345},{group:"Drama",category:2001,measure:110.3943661972},{group:"Drama",category:2002,measure:106.0465116279},{group:"Drama",category:2003,measure:101.6896551724},{group:"Drama",category:2004,measure:101.5571428571},{group:"Drama",category:2005,measure:108.8947368421},{group:"Romance",category:1912,measure:0.0},{group:"Romance",category:1913,measure:0.0},{group:"Romance",category:1914,measure:0.0},{group:"Romance",category:1915,measure:0.0},{group:"Romance",category:1916,measure:0.0},{group:"Romance",category:1917,measure:0.0},{group:"Romance",category:1918,measure:0.0},{group:"Romance",category:1919,measure:73.0},{group:"Romance",category:1921,measure:0.0},{group:"Romance",category:1922,measure:127.0},{group:"Romance",category:1923,measure:98.0},{group:"Romance",category:1924,measure:0.0},{group:"Romance",category:1925,measure:0.0},{group:"Romance",category:1926,measure:0.0},{group:"Romance",category:1927,measure:0.0},{group:"Romance",category:1928,measure:0.0},{group:"Romance",category:1929,measure:0.0},{group:"Romance",category:1930,measure:0.0},{group:"Romance",category:1931,measure:0.0},{group:"Romance",category:1932,measure:0.0},{group:"Romance",category:1933,measure:53.0},{group:"Romance",category:1934,measure:0.0},{group:"Romance",category:1935,measure:68.0},{group:"Romance",category:1936,measure:67.0},{group:"Romance",category:1937,measure:0.0},{group:"Romance",category:1938,measure:0.0},{group:"Romance",category:1939,measure:93.0},{group:"Romance",category:1940,measure:110.5},{group:"Romance",category:1941,measure:0.0},{group:"Romance",category:1942,measure:73.0},{group:"Romance",category:1943,measure:0.0},{group:"Romance",category:1944,measure:113.0},{group:"Romance",category:1945,measure:0.0},{group:"Romance",category:1946,measure:101.0},{group:"Romance",category:1947,measure:95.0},{group:"Romance",category:1948,measure:107.0},{group:"Romance",category:1949,measure:103.0},{group:"Romance",category:1950,measure:90.5},{group:"Romance",category:1951,measure:113.0},{group:"Romance",category:1952,measure:0.0},{group:"Romance",category:1953,measure:0.0},{group:"Romance",category:1954,measure:108.0},{group:"Romance",category:1955,measure:125.5},{group:"Romance",category:1956,measure:0.0},{group:"Romance",category:1957,measure:0.0},{group:"Romance",category:1958,measure:171.0},{group:"Romance",category:1959,measure:0.0},{group:"Romance",category:1960,measure:0.0},{group:"Romance",category:1961,measure:0.0},{group:"Romance",category:1962,measure:0.0},{group:"Romance",category:1963,measure:0.0},{group:"Romance",category:1964,measure:0.0},{group:"Romance",category:1965,measure:0.0},{group:"Romance",category:1966,measure:0.0},{group:"Romance",category:1967,measure:0.0},{group:"Romance",category:1968,measure:89.0},{group:"Romance",category:1969,measure:0.0},{group:"Romance",category:1970,measure:114.0},{group:"Romance",category:1971,measure:0.0},{group:"Romance",category:1972,measure:89.0},{group:"Romance",category:1973,measure:0.0},{group:"Romance",category:1974,measure:84.0},{group:"Romance",category:1975,measure:0.0},{group:"Romance",category:1976,measure:0.0},{group:"Romance",category:1977,measure:99.0},{group:"Romance",category:1978,measure:0.0},{group:"Romance",category:1979,measure:0.0},{group:"Romance",category:1980,measure:93.0},{group:"Romance",category:1981,measure:0.0},{group:"Romance",category:1982,measure:0.0},{group:"Romance",category:1983,measure:0.0},{group:"Romance",category:1984,measure:0.0},{group:"Romance",category:1985,measure:105.0},{group:"Romance",category:1986,measure:80.0},{group:"Romance",category:1987,measure:0.0},{group:"Romance",category:1988,measure:0.0},{group:"Romance",category:1989,measure:0.0},{group:"Romance",category:1990,measure:0.0},{group:"Romance",category:1991,measure:0.0},{group:"Romance",category:1992,measure:106.0},{group:"Romance",category:1993,measure:102.0},{group:"Romance",category:1994,measure:97.5},{group:"Romance",category:1995,measure:0.0},{group:"Romance",category:1996,measure:109.0},{group:"Romance",category:1997,measure:0.0},{group:"Romance",category:1998,measure:0.0},{group:"Romance",category:1999,measure:107.0},{group:"Romance",category:2000,measure:87.0},{group:"Romance",category:2001,measure:0.0},{group:"Romance",category:2002,measure:83.0},{group:"Romance",category:2003,measure:105.0},{group:"Romance",category:2004,measure:0.0},{group:"Romance",category:2005,measure:0.0},{group:"Short",category:1912,measure:0.0},{group:"Short",category:1913,measure:0.0},{group:"Short",category:1914,measure:0.0},{group:"Short",category:1915,measure:0.0},{group:"Short",category:1916,measure:0.0},{group:"Short",category:1917,measure:0.0},{group:"Short",category:1918,measure:19.0},{group:"Short",category:1919,measure:0.0},{group:"Short",category:1921,measure:0.0},{group:"Short",category:1922,measure:0.0},{group:"Short",category:1923,measure:0.0},{group:"Short",category:1924,measure:0.0},{group:"Short",category:1925,measure:0.0},{group:"Short",category:1926,measure:0.0},{group:"Short",category:1927,measure:0.0},{group:"Short",category:1928,measure:0.0},{group:"Short",category:1929,measure:0.0},{group:"Short",category:1930,measure:0.0},{group:"Short",category:1931,measure:0.0},{group:"Short",category:1932,measure:0.0},{group:"Short",category:1933,measure:0.0},{group:"Short",category:1934,measure:20.0},{group:"Short",category:1935,measure:0.0},{group:"Short",category:1936,measure:0.0},{group:"Short",category:1937,measure:0.0},{group:"Short",category:1938,measure:0.0},{group:"Short",category:1939,measure:0.0},{group:"Short",category:1940,measure:0.0},{group:"Short",category:1941,measure:0.0},{group:"Short",category:1942,measure:0.0},{group:"Short",category:1943,measure:0.0},{group:"Short",category:1944,measure:0.0},{group:"Short",category:1945,measure:0.0},{group:"Short",category:1946,measure:0.0},{group:"Short",category:1947,measure:0.0},{group:"Short",category:1948,measure:0.0},{group:"Short",category:1949,measure:0.0},{group:"Short",category:1950,measure:0.0},{group:"Short",category:1951,measure:0.0},{group:"Short",category:1952,measure:0.0},{group:"Short",category:1953,measure:0.0},{group:"Short",category:1954,measure:0.0},{group:"Short",category:1955,measure:0.0},{group:"Short",category:1956,measure:0.0},{group:"Short",category:1957,measure:0.0},{group:"Short",category:1958,measure:0.0},{group:"Short",category:1959,measure:0.0},{group:"Short",category:1960,measure:0.0},{group:"Short",category:1961,measure:0.0},{group:"Short",category:1962,measure:0.0},{group:"Short",category:1963,measure:0.0},{group:"Short",category:1964,measure:30.0},{group:"Short",category:1965,measure:0.0},{group:"Short",category:1966,measure:0.0},{group:"Short",category:1967,measure:0.0},{group:"Short",category:1968,measure:0.0},{group:"Short",category:1969,measure:0.0},{group:"Short",category:1970,measure:23.0},{group:"Short",category:1971,measure:0.0},{group:"Short",category:1972,measure:18.0},{group:"Short",category:1973,measure:29.0},{group:"Short",category:1974,measure:0.0},{group:"Short",category:1975,measure:22.0},{group:"Short",category:1976,measure:0.0},{group:"Short",category:1977,measure:0.0},{group:"Short",category:1978,measure:32.0},{group:"Short",category:1979,measure:0.0},{group:"Short",category:1980,measure:0.0},{group:"Short",category:1981,measure:0.0},{group:"Short",category:1982,measure:0.0},{group:"Short",category:1983,measure:34.0},{group:"Short",category:1984,measure:30.0},{group:"Short",category:1985,measure:0.0},{group:"Short",category:1986,measure:17.0},{group:"Short",category:1987,measure:12.0},{group:"Short",category:1988,measure:11.0},{group:"Short",category:1989,measure:40.0},{group:"Short",category:1990,measure:0.0},{group:"Short",category:1991,measure:17.0},{group:"Short",category:1992,measure:0.0},{group:"Short",category:1993,measure:21.0},{group:"Short",category:1994,measure:21.5},{group:"Short",category:1995,measure:38.0},{group:"Short",category:1996,measure:19.6666666667},{group:"Short",category:1997,measure:41.0},{group:"Short",category:1998,measure:14.0},{group:"Short",category:1999,measure:19.5},{group:"Short",category:2000,measure:16.8},{group:"Short",category:2001,measure:13.7777777778},{group:"Short",category:2002,measure:17.0},{group:"Short",category:2003,measure:20.1034482759},{group:"Short",category:2004,measure:18.0},{group:"Short",category:2005,measure:19.75}];
+
+
+// [{group:"Action",category:1916,measure:105.0},{group:"Action",category:1924,measure:139.0},{group:"Action",category:1934,measure:104.0},{group:"Action",category:1937,measure:68.0},{group:"Action",category:1938,measure:83.0},{group:"Action",category:1939,measure:211.0},{group:"Action",category:1948,measure:68.0},{group:"Action",category:1952,measure:167.0},{group:"Action",category:1956,measure:111.0},{group:"Action",category:1958,measure:101.0},{group:"Action",category:1959,measure:72.0},{group:"Action",category:1962,measure:110.0},{group:"Action",category:1963,measure:104.0},{group:"Action",category:1964,measure:114.6666666667},{group:"Action",category:1965,measure:130.0},{group:"Action",category:1967,measure:117.0},{group:"Action",category:1968,measure:96.5},{group:"Action",category:1969,measure:179.0},{group:"Action",category:1971,measure:120.0},{group:"Action",category:1972,measure:89.0},{group:"Action",category:1973,measure:110.0},{group:"Action",category:1975,measure:99.0},{group:"Action",category:1976,measure:94.6666666667},{group:"Action",category:1977,measure:124.0},{group:"Action",category:1978,measure:136.3333333333},{group:"Action",category:1979,measure:98.5},{group:"Action",category:1980,measure:116.0},{group:"Action",category:1981,measure:103.7142857143},{group:"Action",category:1982,measure:114.1666666667},{group:"Action",category:1983,measure:121.5},{group:"Action",category:1984,measure:140.75},{group:"Action",category:1985,measure:96.0},{group:"Action",category:1986,measure:104.6666666667},{group:"Action",category:1987,measure:107.2},{group:"Action",category:1988,measure:102.5},{group:"Action",category:1989,measure:104.1},{group:"Action",category:1990,measure:102.0},{group:"Action",category:1991,measure:99.3333333333},{group:"Action",category:1992,measure:99.4},{group:"Action",category:1993,measure:98.8571428571},{group:"Action",category:1994,measure:110.1111111111},{group:"Action",category:1995,measure:106.8571428571},{group:"Action",category:1996,measure:105.0909090909},{group:"Action",category:1997,measure:101.52},{group:"Action",category:1998,measure:103.15},{group:"Action",category:1999,measure:103.8461538462},{group:"Action",category:2000,measure:106.6875},{group:"Action",category:2001,measure:103.9444444444},{group:"Action",category:2002,measure:105.1666666667},{group:"Action",category:2003,measure:114.56},{group:"Action",category:2004,measure:107.6923076923},{group:"Action",category:2005,measure:104.25},{group:"Animation",category:1940,measure:84.0},{group:"Animation",category:1950,measure:74.0},{group:"Animation",category:1953,measure:76.0},{group:"Animation",category:1956,measure:93.0},{group:"Animation",category:1971,measure:139.0},{group:"Animation",category:1977,measure:105.0},{group:"Animation",category:1978,measure:132.0},{group:"Animation",category:1983,measure:84.0},{group:"Animation",category:1984,measure:100.0},{group:"Animation",category:1985,measure:80.0},{group:"Animation",category:1993,measure:76.0},{group:"Animation",category:1996,measure:79.0},{group:"Animation",category:1997,measure:94.0},{group:"Animation",category:1998,measure:75.0},{group:"Animation",category:1999,measure:83.0},{group:"Animation",category:2000,measure:82.0},{group:"Animation",category:2001,measure:75.0},{group:"Animation",category:2002,measure:76.6666666667},{group:"Animation",category:2003,measure:86.0},{group:"Animation",category:2004,measure:86.0},{group:"Animation",category:2005,measure:76.5},{group:"Comedy",category:1914,measure:82.0},{group:"Comedy",category:1922,measure:60.0},{group:"Comedy",category:1924,measure:83.5},{group:"Comedy",category:1925,measure:82.0},{group:"Comedy",category:1928,measure:75.0},{group:"Comedy",category:1929,measure:98.0},{group:"Comedy",category:1930,measure:93.0},{group:"Comedy",category:1931,measure:60.0},{group:"Comedy",category:1932,measure:91.0},{group:"Comedy",category:1933,measure:72.8571428571},{group:"Comedy",category:1934,measure:85.0},{group:"Comedy",category:1935,measure:76.5},{group:"Comedy",category:1936,measure:89.2},{group:"Comedy",category:1937,measure:86.0},{group:"Comedy",category:1938,measure:82.3333333333},{group:"Comedy",category:1940,measure:122.0},{group:"Comedy",category:1941,measure:96.0},{group:"Comedy",category:1942,measure:79.3333333333},{group:"Comedy",category:1943,measure:92.25},{group:"Comedy",category:1944,measure:100.3333333333},{group:"Comedy",category:1946,measure:110.0},{group:"Comedy",category:1947,measure:102.5},{group:"Comedy",category:1948,measure:111.6666666667},{group:"Comedy",category:1949,measure:100.0},{group:"Comedy",category:1951,measure:84.5},{group:"Comedy",category:1952,measure:76.75},{group:"Comedy",category:1953,measure:96.0},{group:"Comedy",category:1955,measure:104.75},{group:"Comedy",category:1956,measure:175.0},{group:"Comedy",category:1957,measure:100.0},{group:"Comedy",category:1958,measure:82.0},{group:"Comedy",category:1959,measure:68.3333333333},{group:"Comedy",category:1960,measure:88.75},{group:"Comedy",category:1961,measure:97.5},{group:"Comedy",category:1962,measure:71.6666666667},{group:"Comedy",category:1963,measure:94.5},{group:"Comedy",category:1964,measure:101.6666666667},{group:"Comedy",category:1965,measure:85.0},{group:"Comedy",category:1966,measure:96.8333333333},{group:"Comedy",category:1967,measure:124.5},{group:"Comedy",category:1968,measure:94.6666666667},{group:"Comedy",category:1969,measure:102.2857142857},{group:"Comedy",category:1970,measure:93.0},{group:"Comedy",category:1971,measure:90.4},{group:"Comedy",category:1972,measure:85.6666666667},{group:"Comedy",category:1973,measure:86.5},{group:"Comedy",category:1974,measure:94.0},{group:"Comedy",category:1975,measure:96.75},{group:"Comedy",category:1976,measure:101.3333333333},{group:"Comedy",category:1977,measure:89.6666666667},{group:"Comedy",category:1978,measure:99.0},{group:"Comedy",category:1979,measure:105.5},{group:"Comedy",category:1980,measure:101.1428571429},{group:"Comedy",category:1981,measure:94.2727272727},{group:"Comedy",category:1982,measure:100.8571428571},{group:"Comedy",category:1983,measure:96.8571428571},{group:"Comedy",category:1984,measure:92.3333333333},{group:"Comedy",category:1985,measure:93.5263157895},{group:"Comedy",category:1986,measure:99.3333333333},{group:"Comedy",category:1987,measure:92.1666666667},{group:"Comedy",category:1988,measure:94.9473684211},{group:"Comedy",category:1989,measure:94.7777777778},{group:"Comedy",category:1990,measure:98.8571428571},{group:"Comedy",category:1991,measure:91.8181818182},{group:"Comedy",category:1992,measure:99.8},{group:"Comedy",category:1993,measure:90.8888888889},{group:"Comedy",category:1994,measure:88.4666666667},{group:"Comedy",category:1995,measure:94.3076923077},{group:"Comedy",category:1996,measure:95.2857142857},{group:"Comedy",category:1997,measure:93.1739130435},{group:"Comedy",category:1998,measure:94.3793103448},{group:"Comedy",category:1999,measure:94.7954545455},{group:"Comedy",category:2000,measure:96.7},{group:"Comedy",category:2001,measure:93.5581395349},{group:"Comedy",category:2002,measure:92.1538461538},{group:"Comedy",category:2003,measure:90.6382978723},{group:"Comedy",category:2004,measure:97.0},{group:"Comedy",category:2005,measure:94.7777777778},{group:"Documentary",category:1922,measure:79.0},{group:"Documentary",category:1957,measure:81.0},{group:"Documentary",category:1963,measure:72.0},{group:"Documentary",category:1966,measure:60.0},{group:"Documentary",category:1969,measure:75.0},{group:"Documentary",category:1970,measure:216.0},{group:"Documentary",category:1978,measure:55.0},{group:"Documentary",category:1979,measure:101.0},{group:"Documentary",category:1981,measure:100.0},{group:"Documentary",category:1982,measure:59.0},{group:"Documentary",category:1985,measure:114.0},{group:"Documentary",category:1988,measure:86.5},{group:"Documentary",category:1989,measure:117.0},{group:"Documentary",category:1990,measure:71.0},{group:"Documentary",category:1991,measure:114.0},{group:"Documentary",category:1994,measure:132.0},{group:"Documentary",category:1995,measure:91.0},{group:"Documentary",category:1996,measure:50.0},{group:"Documentary",category:1997,measure:90.5},{group:"Documentary",category:1998,measure:83.6666666667},{group:"Documentary",category:1999,measure:103.0},{group:"Documentary",category:2000,measure:60.0},{group:"Documentary",category:2001,measure:85.4285714286},{group:"Documentary",category:2002,measure:81.8},{group:"Documentary",category:2003,measure:65.4545454545},{group:"Documentary",category:2004,measure:83.88},{group:"Documentary",category:2005,measure:88.0},{group:"Drama",category:1912,measure:55.0},{group:"Drama",category:1913,measure:88.0},{group:"Drama",category:1914,measure:98.3333333333},{group:"Drama",category:1915,measure:92.0},{group:"Drama",category:1916,measure:197.0},{group:"Drama",category:1917,measure:114.3333333333},{group:"Drama",category:1918,measure:86.0},{group:"Drama",category:1919,measure:50.0},{group:"Drama",category:1921,measure:150.0},{group:"Drama",category:1922,measure:206.3333333333},{group:"Drama",category:1923,measure:106.6},{group:"Drama",category:1925,measure:96.3333333333},{group:"Drama",category:1926,measure:90.6666666667},{group:"Drama",category:1927,measure:149.5},{group:"Drama",category:1928,measure:90.3333333333},{group:"Drama",category:1929,measure:79.0},{group:"Drama",category:1930,measure:108.0},{group:"Drama",category:1931,measure:88.25},{group:"Drama",category:1932,measure:82.1428571429},{group:"Drama",category:1933,measure:74.2222222222},{group:"Drama",category:1934,measure:85.2},{group:"Drama",category:1935,measure:87.2222222222},{group:"Drama",category:1936,measure:83.0},{group:"Drama",category:1937,measure:102.4},{group:"Drama",category:1938,measure:105.0},{group:"Drama",category:1939,measure:101.125},{group:"Drama",category:1940,measure:85.6666666667},{group:"Drama",category:1941,measure:95.8571428571},{group:"Drama",category:1942,measure:131.0},{group:"Drama",category:1943,measure:108.6},{group:"Drama",category:1944,measure:120.5},{group:"Drama",category:1945,measure:99.3333333333},{group:"Drama",category:1946,measure:109.0},{group:"Drama",category:1947,measure:97.4},{group:"Drama",category:1948,measure:101.0},{group:"Drama",category:1949,measure:105.5},{group:"Drama",category:1950,measure:89.25},{group:"Drama",category:1951,measure:108.7142857143},{group:"Drama",category:1952,measure:103.3333333333},{group:"Drama",category:1953,measure:93.625},{group:"Drama",category:1954,measure:116.375},{group:"Drama",category:1955,measure:109.375},{group:"Drama",category:1956,measure:130.5},{group:"Drama",category:1957,measure:97.8461538462},{group:"Drama",category:1958,measure:94.1666666667},{group:"Drama",category:1959,measure:124.2857142857},{group:"Drama",category:1960,measure:102.8},{group:"Drama",category:1961,measure:118.4285714286},{group:"Drama",category:1962,measure:126.6363636364},{group:"Drama",category:1963,measure:106.875},{group:"Drama",category:1964,measure:120.4285714286},{group:"Drama",category:1965,measure:123.0},{group:"Drama",category:1966,measure:133.0},{group:"Drama",category:1967,measure:101.4615384615},{group:"Drama",category:1968,measure:127.75},{group:"Drama",category:1969,measure:111.4444444444},{group:"Drama",category:1970,measure:110.4375},{group:"Drama",category:1971,measure:106.5},{group:"Drama",category:1972,measure:129.6666666667},{group:"Drama",category:1973,measure:109.4},{group:"Drama",category:1974,measure:124.0},{group:"Drama",category:1975,measure:108.3333333333},{group:"Drama",category:1976,measure:130.7272727273},{group:"Drama",category:1977,measure:114.6666666667},{group:"Drama",category:1978,measure:116.0},{group:"Drama",category:1979,measure:107.8333333333},{group:"Drama",category:1980,measure:127.9},{group:"Drama",category:1981,measure:125.5714285714},{group:"Drama",category:1982,measure:118.0},{group:"Drama",category:1983,measure:116.4166666667},{group:"Drama",category:1984,measure:133.5},{group:"Drama",category:1985,measure:105.5714285714},{group:"Drama",category:1986,measure:104.4117647059},{group:"Drama",category:1987,measure:123.1818181818},{group:"Drama",category:1988,measure:108.2352941176},{group:"Drama",category:1989,measure:109.0909090909},{group:"Drama",category:1990,measure:134.2},{group:"Drama",category:1991,measure:115.4285714286},{group:"Drama",category:1992,measure:116.9375},{group:"Drama",category:1993,measure:126.6315789474},{group:"Drama",category:1994,measure:106.8},{group:"Drama",category:1995,measure:120.92},{group:"Drama",category:1996,measure:111.625},{group:"Drama",category:1997,measure:117.5294117647},{group:"Drama",category:1998,measure:106.8333333333},{group:"Drama",category:1999,measure:114.8611111111},{group:"Drama",category:2000,measure:114.1379310345},{group:"Drama",category:2001,measure:110.3943661972},{group:"Drama",category:2002,measure:106.0465116279},{group:"Drama",category:2003,measure:101.6896551724},{group:"Drama",category:2004,measure:101.5571428571},{group:"Drama",category:2005,measure:108.8947368421},{group:"Romance",category:1919,measure:73.0},{group:"Romance",category:1922,measure:127.0},{group:"Romance",category:1923,measure:98.0},{group:"Romance",category:1933,measure:53.0},{group:"Romance",category:1935,measure:68.0},{group:"Romance",category:1936,measure:67.0},{group:"Romance",category:1939,measure:93.0},{group:"Romance",category:1940,measure:110.5},{group:"Romance",category:1942,measure:73.0},{group:"Romance",category:1944,measure:113.0},{group:"Romance",category:1946,measure:101.0},{group:"Romance",category:1947,measure:95.0},{group:"Romance",category:1948,measure:107.0},{group:"Romance",category:1949,measure:103.0},{group:"Romance",category:1950,measure:90.5},{group:"Romance",category:1951,measure:113.0},{group:"Romance",category:1954,measure:108.0},{group:"Romance",category:1955,measure:125.5},{group:"Romance",category:1958,measure:171.0},{group:"Romance",category:1968,measure:89.0},{group:"Romance",category:1970,measure:114.0},{group:"Romance",category:1972,measure:89.0},{group:"Romance",category:1974,measure:84.0},{group:"Romance",category:1977,measure:99.0},{group:"Romance",category:1980,measure:93.0},{group:"Romance",category:1985,measure:105.0},{group:"Romance",category:1986,measure:80.0},{group:"Romance",category:1992,measure:106.0},{group:"Romance",category:1993,measure:102.0},{group:"Romance",category:1994,measure:97.5},{group:"Romance",category:1996,measure:109.0},{group:"Romance",category:1999,measure:107.0},{group:"Romance",category:2000,measure:87.0},{group:"Romance",category:2002,measure:83.0},{group:"Romance",category:2003,measure:105.0},{group:"Short",category:1918,measure:19.0},{group:"Short",category:1934,measure:20.0},{group:"Short",category:1964,measure:30.0},{group:"Short",category:1970,measure:23.0},{group:"Short",category:1972,measure:18.0},{group:"Short",category:1973,measure:29.0},{group:"Short",category:1975,measure:22.0},{group:"Short",category:1978,measure:32.0},{group:"Short",category:1983,measure:34.0},{group:"Short",category:1984,measure:30.0},{group:"Short",category:1986,measure:17.0},{group:"Short",category:1987,measure:12.0},{group:"Short",category:1988,measure:11.0},{group:"Short",category:1989,measure:40.0},{group:"Short",category:1991,measure:17.0},{group:"Short",category:1993,measure:21.0},{group:"Short",category:1994,measure:21.5},{group:"Short",category:1995,measure:38.0},{group:"Short",category:1996,measure:19.6666666667},{group:"Short",category:1997,measure:41.0},{group:"Short",category:1998,measure:14.0},{group:"Short",category:1999,measure:19.5},{group:"Short",category:2000,measure:16.8},{group:"Short",category:2001,measure:13.7777777778},{group:"Short",category:2002,measure:17.0},{group:"Short",category:2003,measure:20.1034482759},{group:"Short",category:2004,measure:18.0},{group:"Short",category:2005,measure:19.75}];
+
+// set initial category value
+var group = "Action";
+
+function datasetLineChartChosen(group) {
+	var ds = [];
+	for (x in datasetLineChart) {
+		 if(datasetLineChart[x].group==group){
+		 	ds.push(datasetLineChart[x]);
+		 } 
+		}
+	// console.log("Returning ", ds);
+	return ds;
+}
+
+function dsLineChartBasics() {
+
+	var margin = {top: 20, right: 10, bottom: 0, left: 50},
+	    width = 500 - margin.left - margin.right,
+	    height = 150 - margin.top - margin.bottom
+	    ;
+		
+		return {
+			margin : margin, 
+			width : width, 
+			height : height
+		}			
+		;
+}
+
+
+function dsLineChart() {
+
+	var firstDatasetLineChart = datasetLineChartChosen(group);    
+	
+	var basics = dsLineChartBasics();
+	
+	var margin = basics.margin,
+		width = basics.width,
+	   height = basics.height
+		;
+
+	var xScale = d3.scale.linear()
+	    .domain([0, firstDatasetLineChart.length-1])
+	    .range([0, width])
+	    ;
+
+	var yScale = d3.scale.linear()
+	    .domain([0, d3.max(firstDatasetLineChart, function(d) { return d.measure; })])
+	    .range([height, 0])
+	    ;
+	
+	var line = d3.svg.line()
+	    //.x(function(d) { return xScale(d.category); })
+	    .x(function(d, i) { return xScale(i); })
+	    .y(function(d) { return yScale(d.measure); })
+	    ;
+	
+	var svg = d3.select("#lineChart").append("svg")
+	    .datum(firstDatasetLineChart)
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	    // create group and move it so that margins are respected (space for axis and title)
+	    
+	var plot = svg
+	    .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+	    .attr("id", "lineChartPlot")
+	    ;
+
+		/* descriptive titles as part of plot -- start */
+	var dsLength=firstDatasetLineChart.length;
+
+	// console.log(firstDatasetLineChart);
+	// plot.append("text")
+	// 	.text(firstDatasetLineChart[dsLength-1].measure)
+	// 	.attr("id","lineChartTitle2")
+	// 	.attr("x",width/2)
+	// 	.attr("y",height/2)	
+	// 	;
+	/* descriptive titles -- end */
+	    
+	plot.append("path")
+	    .attr("class", "line")
+	    .attr("d", line)	
+	    // add color
+		.attr("stroke", "green")
+	    ;
+	
+	var tip = d3.tip()
+        .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+          	console.log("data" ,d);
+    return "<br> <strong>Avg Movie Length</strong> <span style='color:black'>" + d.measure+ "  "+ "</span></br>"
+          +"<br><strong>Year:</strong> <span style='color:black'>" + d.category + "</span></br>";
+          //  +"<br><strong>MurderRate:</strong> <span style='color:black'>" + d.Murder + "</span>"
+          //  +"<strong>Illiteracy:</strong> <span style='color:black'>" + d.Illiteracy + "</span></br>";
+  });
+
+ svg.call(tip)
+
+
+ 
+		plot.selectAll(".dot")
+	   .data(firstDatasetLineChart)
+	   .enter().append("circle")
+	   // .transition()
+		// .duration(750)
+	   .attr("class", "dot")
+	   .attr("fill", function (d) { return d.measure==d3.min(firstDatasetLineChart, function(d) { return d.measure; }) ? "red" : (d.measure==d3.max(firstDatasetLineChart, function(d) { return d.measure; }) ? "green" : "white") } )
+	   .attr("cx", line.x())
+	   .attr("cy", line.y())
+	   .attr("r", 3.5)
+	   // add color
+		.attr("stroke", "green")
+		.on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+	   ;
+
+	// plot.selectAll(".dot")
+	//     .data(firstDatasetLineChart)
+	//   	 .enter().append("circle")
+	//     .attr("class", "dot")
+	//     //.attr("stroke", function (d) { return d.measure==datasetMeasureMin ? "red" : (d.measure==datasetMeasureMax ? "green" : "steelblue") } )
+	//     .attr("fill", function (d) { return d.measure==d3.min(firstDatasetLineChart, function(d) { return d.measure; }) ? "red" : (d.measure==d3.max(firstDatasetLineChart, function(d) { return d.measure; }) ? "green" : "white") } )
+	//     //.attr("stroke-width", function (d) { return d.measure==datasetMeasureMin || d.measure==datasetMeasureMax ? "3px" : "1.5px"} )
+	//     .attr("cx", line.x())
+	//     .attr("cy", line.y())
+	//     .attr("r", 3.5)
+	//     .on('mouseover', tip.show)
+ //      .on('mouseout', tip.hide)
+	//     // .attr("stroke", "lightgrey")
+	//     // .append("title")
+	//     // .text(function(d) { return d.category + ": " + formatAsInteger(d.measure); })
+	//     ;
+
+	svg.append("text")
+		.text("Average Movie Length")
+		.attr("id","lineChartTitle1")	
+		.attr("class","title")
+		.attr("x",margin.left + ((width + margin.right)/2))
+		.attr("y", 10)
+		;
+
+}
+
+dsLineChart();
+
+
+ /* ** UPDATE CHART ** */
+ 
+/* updates bar chart on request */
+function updateLineChart(group, colorChosen) {
+
+	var currentDatasetLineChart = datasetLineChartChosen(group);   
+
+	var basics = dsLineChartBasics();
+	
+	var margin = basics.margin,
+		width = basics.width,
+	   height = basics.height
+		;
+
+	var xScale = d3.scale.linear()
+	    .domain([0, currentDatasetLineChart.length-1])
+	    .range([0, width])
+	    ;
+
+	var yScale = d3.scale.linear()
+	    .domain([0, d3.max(currentDatasetLineChart, function(d) { return d.measure; })])
+	    .range([height, 0])
+	    ;
+	
+	var line = d3.svg.line()
+    .x(function(d, i) { return xScale(i); })
+    .y(function(d) { return yScale(d.measure); })
+    ;
+
+   var plot = d3.select("#lineChartPlot")
+   	.datum(currentDatasetLineChart)
+	   ;
+	   
+	/* descriptive titles as part of plot -- start */
+	var dsLength=currentDatasetLineChart.length;
+	
+	plot.select("text")
+		.text(currentDatasetLineChart[dsLength-1].measure)
+		;
+	/* descriptive titles -- end */
+	   
+	plot
+	.select("path")
+		.transition()
+		.duration(750)			    
+	   .attr("class", "line")
+	   .attr("d", line)	
+	   // add color
+		.attr("stroke", colorChosen)
+	   ;
+	   
+	var path = plot
+		.selectAll(".dot")
+	   .data(currentDatasetLineChart)
+	   .transition()
+		.duration(750)
+	   .attr("class", "dot")
+	   .attr("fill", function (d) { return d.measure==d3.min(currentDatasetLineChart, function(d) { return d.measure; }) ? "red" : (d.measure==d3.max(currentDatasetLineChart, function(d) { return d.measure; }) ? "green" : "white") } )
+	   .attr("cx", line.x())
+	   .attr("cy", line.y())
+	   .attr("r", 3.5)
+	   // add color
+		.attr("stroke", colorChosen)
+	   ;
+	   
+	   path
+	   .selectAll("title")
+	   .text(function(d) { return d.category + ": " + formatAsInteger(d.measure); })	 
+	   ;  
+
+}
+
+    </script>
+  </body>
+</html>
