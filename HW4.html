@@ -153,8 +153,8 @@ h1 {
  
 
 <div id="Level1">
- <header><h1> Level 1 - Tabaleau Dashboard</h1> </header>
-<a href="HW4Tab.html">Tablauea Dashboard</a>
+ <header><h1> Level 1 - Tableau Dashboard</h1> </header>
+<a href="HW4Tab.html">Tableau Dashboard</a>
 </div>
 
 
@@ -184,43 +184,98 @@ h1 {
         <div class="media">
        
             <div class="media-body">
-               <p> Data Cleaning </p>
+               <p> Data Cleaning  </p>
                 <p>
                   <ul>
-                    <li> From Seatbelts dataset, time series was created using R. Code is available on Github in file named 'Read.R'  </li>
-                    <li>  For Seatbelts dataset in R is in time series format. This is converted to a dataframe and month column is added</li>
-                    <li> Data frame created in above step is exported to csv file </li>
-                  </ul>
-                </p> 
+                    <li> Movies dataset in ggplot2 had 58,788 rows.  This dataset contains movie information and user ratings from IMDB.com.  This dataset contains below fields:
+                      <ul>
+                          <li>title. Title of the movie.</li>
 
+                             <li>  year. Year of release.</li>
 
-                <p> Level 1 - Line Series plot</p>
+                            <li>   budget. Total budget (if known) in US dollars</li>
+ 
+                           <li>    length. Length in minutes.</li>
+
+                            <li>   rating. Average IMDB user rating.</li>
+
+                           <li>    votes. Number of IMDB users who rated this movie.</li>
+
+                           <li>    r1-10. Multiplying by ten gives percentile (to nearest 10%) of users who rated this movie a 1.</li>
+
+                           <li>    mpaa. MPAA rating.</li>
+
+                           <li>    action, animation, comedy, drama, documentary, romance, short. Binary variables representing if movie was classified as belonging to that genre</li>
+                          </ul> 
+
+This dataset has two problems. <ul>
+     <li> There are many movies with many Genre values or no Genre values. </li>
+     <li> Movie budget was not available for many movies. </li>
+
+</ul>
+<li>
+    During pre-processing, movies with only Genre were considered. And, movies for which no budget column was specificed are removed. After applying these two rules, dataset now has 2543 movies.</li>
+<li> Genre column was generated Tableau using calculated field feature. </li>
+<li> Budget is a numerical value in original dataset. This is converetd to categorical variable with 6 values. i.e."Low to Quantile1", "Quantile1 to Median", "Median to Mean", "Mean to Quantile 3", "Quantile 3 to Highest value, using calcualted feature function in Tableau.</li>
+
+                        </li>
+                    
+
+</div>
+<div class="media-body">
+               <p> Approach  </p>   
+
+               <ul>
+                  <li> I chose to plot below three charts from cleaned data set:
+                    <ul>
+                       <li> Bar Chart - Genre wise movie number of movies in cleaned dataset.   
+
+                            This chart gives information regarding which Genre movies were prodiced most so far.
+
+                              </li> 
+                       <li> Bar Chart - Average Movie Rating vs Budget Category wise 
+                           I plotted this chart to see whether any correaltion exists between movie budget and average viewer rating. </li>
+                       <li> Line plot - Average length of movies per year
+                        I wanted to check, whether movie lengths are increasing or decreasing for each genre.
+                        </li>
+
+                    </ul>
+                    </li>
+               </ul>  
+
+                <p> Dataset preparation</p>
                     <p> 
                         <ul>
-                            <li> I chose to plot total driver deaths, front seat passengers killed and rear seat passengers killed on multi-line time seris. </li>
-                            <li> Relevant legend is also placed on top of the chart </li>
+                            <li> I mainly used R for data set preperation for each of the charts.  R code is available on Github in file "movies.R"</li>
+
+                            <li>I used Python to generate JSON files required for d3. </li>
                         </ul>
                      </p>
-                <p> Level 1 - Stacked area plot </p>
-                    <p>
+                <p> Features and Interactivity </p>
+                    <p> Level 1 - Tableau </p>
                         <ul>
-                            <li> In stacked area plot also, total driver deaths, front seat passengers killed and rear seat passengers killed are shown.  </li>
+                            <li> Tableau dashboard has three charts that are generated using d3.  </li>
+                            <li> I was not able to exactly reproduce d3 bar chart ( Budget vs Average Rating) & line chart in tableau. 
+                              In d3, I have the option of showing only one Genre at a time. But, I could not find similar option in tableau. </li>
+                            <li> Therefore, I am showing all genres at a time in tableau.</li>
                         </ul>
                     </p>
-                <p> Level 2 </p>
+                <p> Level 2  - Tableau Dashboard replication in d3</p>
                     <p>
                         <ul>
-                            <li> In level-2, I tried to add tool tip, zoom and pan functionalities.  These functionalites were working fine, when separate d3 plots were created. However, when I combine them these functionaties are not working fine </li>
-                            <li> That's why a separate link to zoom and pan chart & Tool Tip functionarlity is given.</li>
-                            
+                            <li> In level-2, tableau dashboard is replicated as it is, with the exception mentioned above . </li>
+                            <li> I also used same color scheme for genres across all three charts. </li>
+
                           
                         </ul>
                     </p>
                 </p>
-          <p> Level 3 </p>
+
+          <p> Level 3 - d3 Dash board Interactivity </p>
                     <p>
                         <ul>
-                            <li> In level-3, I completed brushing functionality  for  front seat passenger deaths area plot </li>
+                            <li> In level-3, interactivity is implemented. When a user selects a genre on left hand bar chart, then other two charts correspodning to that genre will be shown. </li>
+                            <li> Aslo, heading information corresponding to selected genere will be shown. </li>
                         
                             
                           
