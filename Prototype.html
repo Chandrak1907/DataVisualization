@@ -1,0 +1,71 @@
+
+<html>
+<head>
+<title>Chandra's Data Visualization Project - Prototype</title>
+</head>
+
+<body>
+    <div id="page">
+		
+        <div id="header">
+        	<h1>Chandra's Data Visualization Project - Prototype</h1>
+      </div>
+  
+        <div class="contentTitle"><h2>Dataset Summary </h2>
+          <ul>
+            <li> Consumer Financial Protection Bureau (CFPB) is established by the Dodd-Frank Wall Street Reform and Consumer Protection Act of 2010 (Dodd-Frank Act) with a mission to make markets for consumer financial products and services work for Americans.  Financial crisis on 2007 left many americans with loans. Therefore, this agency was created to heighten government accountability by consolidating in one place responsibilities that had been scattered across US government. Objevtive this agency is to protect american families from unfair, deceptive, and abusive financial practices. 
+
+
+            One of the functions of this agency is to take consumer complaints regarding various financial services or products. These complaints can be logged  <a href="http://www.consumerfinance.gov/complaint">here.</a>
+            
+
+            <a href="http://catalog.data.gov/dataset/consumer-complaint-database">Consumer complaint database </a>  consists of complaints logged by Americans from December 2011 till April 2015. This dataset is regularly update by CFPB. </li>
+
+
+            <li> 
+              <ul>
+                <li> I wanted to identfiy  patterns in number of complaints  logged across different states on geo-plot.</li>
+                <li> I also wanted to check whether any correlation exists among different types of complaints e.g. credit card, debt collection and mortgage. </li>
+                <li> And, also I wanted to identify  the service with more number of complaints.</li>
+              </ul>
+             </li>   
+
+            <li> I used R to pre-process dataset. I also used python to merge state codes for geo-plotting </li>
+
+            <li> Link to Project Dataset write up is <a href="http://chandrak1907.github.io/DataVisualization/dataset.html"> here </a>
+           </ul> 
+        </div>
+
+         <div class="contentTitle"><h2>Sketch Summary </h2>
+
+          My sketch consits of four plots. 
+          <ul>
+            <li> 
+            <li> Chropleth map for a type of complaint on US map. From this plot, states with maximum number of comaplints for selected complaint can be identified. </li>
+            <li> Time series plot for each comaplaint. From this, financial service/product with maximum number of complaints can be known.  </li>
+            <li> Bublle plot of number of credit card complaints vs number of debt collection  complaints with number of mortgage complaints as bubble radius. I am expecting that there will be a correlation across these three services, as they are more likely related. </li>
+            <li> Parallel plot of dataset.  It is possible to check whether any relationship exists across all finanical products and services from this plot. </li> 
+          </li>
+          <li> Link to my write up on <a href= " http://chandrak1907.github.io/DataVisualization/sketch.html " >project sketch </a></li>
+          </div>
+
+
+      
+         
+         <div class="contentTitle"><h2>Protypes</h2>
+          <ul>
+          <li> I created a tableau proptype of bubble chart to ascertain whether any correlation exists among number of complaints related debt collection, credit card and mortgage    </li>
+
+          <li>  Below chart clearly shows that number of complaints regarding to debt collection are more when credit card and mortgage complaints increase.
+
+<script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script><div class='tableauPlaceholder' style='width: 982px; height: 742px;'><noscript><a href='#'><img alt='Debt Collection vs Credit Card - Mortgage Complaints ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;CF&#47;CFPB_BubbleChart&#47;Sheet1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' width='982' height='742' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='site_root' value='' /><param name='name' value='CFPB_BubbleChart&#47;Sheet1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;CF&#47;CFPB_BubbleChart&#47;Sheet1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='showVizHome' value='no' /><param name='showTabs' value='y' /><param name='bootstrapWhenNotified' value='true' /></object></div>
+
+           </li>
+          <li>   </li>
+        </div>
+
+
+         
+         
+</body>
+</html>

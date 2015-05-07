@@ -1,4 +1,6 @@
 dg =(as.data.frame(Seatbelts))
+head(dg)
+str(Seatbelts)
 library(lubridate)
 dg$time= seq(ymd('1969-01-01'),ymd('1984-12-31'), by = '1 month')
 head(dg)
