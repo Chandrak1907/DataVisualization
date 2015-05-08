@@ -177,51 +177,7 @@ h1 {
    
 </div>
 
-<div class="row">
-    <div class="col-md-8">
-        <h2 class="page-header"><a name="about"></a>Documentation</h2>
 
-        <div class="media">
-       
-            <div class="media-body">
-               <p> Data Cleaning  </p>
-                <p>
-                  <ul>
-                    <li> Movies dataset in ggplot2 had 58,788 rows.  This dataset contains movie information and user ratings from IMDB.com.  This dataset contains below fields:
-                      <ul>
-                          <li>title. Title of the movie.</li>
-
-                             <li>  year. Year of release.</li>
-
-                            <li>   budget. Total budget (if known) in US dollars</li>
- 
-                           <li>    length. Length in minutes.</li>
-
-                            <li>   rating. Average IMDB user rating.</li>
-
-                           <li>    votes. Number of IMDB users who rated this movie.</li>
-
-                           <li>    r1-10. Multiplying by ten gives percentile (to nearest 10%) of users who rated this movie a 1.</li>
-
-                           <li>    mpaa. MPAA rating.</li>
-
-                           <li>    action, animation, comedy, drama, documentary, romance, short. Binary variables representing if movie was classified as belonging to that genre</li>
-                          </ul> 
-
-This dataset has two problems. <ul>
-     <li> There are many movies with many Genre values or no Genre values. </li>
-     <li> Movie budget was not available for many movies. </li>
-
-</ul>
-<li>
-    During pre-processing, movies with only Genre were considered. And, movies for which no budget column was specificed are removed. After applying these two rules, dataset now has 2543 movies.</li>
-<li> Genre column was generated Tableau using calculated field feature. </li>
-<li> Budget is a numerical value in original dataset. This is converetd to categorical variable with 6 values. i.e."Low to Quantile1", "Quantile1 to Median", "Median to Mean", "Mean to Quantile 3", "Quantile 3 to Highest value, using calcualted feature function in Tableau.</li>
-
-                        </li>
-                    
-
-</div>
 <div class="media-body">
                <p> Approach  </p>   
 
