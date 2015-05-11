@@ -34,7 +34,7 @@ tip = d3.tip()
   .offset([-10, 0])
   .direction('n')
   .html(function(d) {
-    return nameById.get(d.id) + "<br/>Income change: " + (rateById.get(d.id)).toFixed(0) + "" 
+    return nameById.get(d.id) + "<br/>Number of Complaints: " + (rateById.get(d.id)).toFixed(0) + "" 
     // "<br/>Population change: " + (popById.get(d.id)*100).toFixed(2) + "%" 
  });
     
