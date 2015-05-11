@@ -165,7 +165,8 @@ function areaseries(data) {
     // http://www.delimited.io/blog/2014/3/3/creating-multi-series-charts-in-d3-lines-bars-area-and-streamgraphs
     // http://jsfiddle.net/superboggly/XK53c/
     // http://mypage.iu.edu/~jlorince/projects/tagging/tagExplorer.html
-    console.log(" I am in areaseries", data);
+
+
     var margin = {top: 20, right: 20, bottom: 50, left: 50},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -213,6 +214,7 @@ function areaseries(data) {
 
     var area = d3.svg.area()
         .x(function(d) { 
+            console.log(" I am in areaseries", d);
             // console.log("PP ",x(d.Month));
             // console.log("I am in area", d.Mortgage, d.Month);
             // console.log(("LL ",d.Month));

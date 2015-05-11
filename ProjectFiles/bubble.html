@@ -244,27 +244,27 @@ d3.csv("LatestfileforCholo_bubble.csv", function(error, data) {
       //});
 
 
-  // draw legend
-  var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 10 + ")"; });
+  // // draw legend
+  // var legend = svg.selectAll(".legend")
+  //     .data(color.domain())
+  //   .enter().append("g")
+  //     .attr("class", "legend")
+  //     .attr("transform", function(d, i) { return "translate(0," + i * 10 + ")"; });
 
-  // draw legend colored rectangles
-  legend.append("rect")
-      .attr("x", width + 25)
-      .attr("width", 10)
-      .attr("height", 10)
-      .style("fill", color);
+  // // draw legend colored rectangles
+  // legend.append("rect")
+  //     .attr("x", width + 25)
+  //     .attr("width", 10)
+  //     .attr("height", 10)
+  //     .style("fill", color);
 
-  // draw legend text
-  legend.append("text")
-      .attr("x", width +40)
-      .attr("y", 7)
-      .attr("dy", ".10em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d;})
+  // // draw legend text
+  // legend.append("text")
+  //     .attr("x", width +40)
+  //     .attr("y", 7)
+  //     .attr("dy", ".10em")
+  //     .style("text-anchor", "end")
+  //     .text(function(d) { return d;})
 });
 
 </script>
