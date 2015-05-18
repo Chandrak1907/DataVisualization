@@ -63,7 +63,7 @@
          <div class="contentTitle"><h2>Interactivity  </h2>
 
             <ul> 
-              <li> Choropleth Plot -  In choropleth plot below interactive features are implemented.
+              <li> <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> -  In choropleth plot below interactive features are implemented.
                   <ul>
                     <li> Brushing feature on histogram - If a bar with a particular value is selected, then corresponding area on US map will be highlighted. </li>
                     <li> Further ther is an option to drag the selection in brushing feature. Two rectancle likes will appear as soon as a bar is selected on histogram. This selection can be changed by dragging rectanles on either side.  </li>
@@ -73,7 +73,7 @@
                     <li> When a state is clicked, number of comaplaints per one million people for each complaint is shown in a horizontal bar at the bottom of chart.</li>
                   </ul>
 
-                <li> Bubble Plot - 
+                <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
                   <ul>
                   <li> Select boxes - In bubble plot, I provided select boxes to select variables for  X-axis, Y-axis and Radius variable. All these variables should be different to generate plot. </li>
                    <li> Tool tip - Tool tip is shown to provide information regarding each bubble in plot. </li>
@@ -81,7 +81,7 @@
 
                   </ul>
 
-                  <li> Time series Plot - 
+                 <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
                   <ul>
                   <li>  Small multiple plots are drawn at the top of chart to give an overall view of trend of each complaint type over a period of time. </li>
                   <li> Selecting any of the multiple plot will show an area plot corresponding to that small multiple. </li>
@@ -91,7 +91,7 @@
 
                 
 
-                <li> Parallel plot - 
+                <li>    <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
                   <ul>
                   <li> Brushing feature - Brushing feature is implemented in this plot to highlight a range and to highlight corresponding data points. </li>
                    <li> A feature to move parallel plot axis is also implemented. This will be useful for analyzing data with respect to a feature. </li>
@@ -104,24 +104,24 @@
          
          <div class="contentTitle"><h2>Feedback (overall)</h2>
           <ul>
-          <li> Choropleth plot: </li>
+         <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> 
             <ul>
               <li> In initial implementation, I plotted total number of mortgage complaints. During prototype feedback session, it was told that information in the plot is not normalized as number of people living in each state are not equal in each state.  I accepted this suggestion and further, I modified the plot by summing up number of complaints to give a overall information regarding number of comaplints.  </li>
               <li> In horizontal bar chart, I showed X-axis. Prof.Sophie's feedback was to remove X-axis as it is not add extra information in horizontal bar chart. I accepted this suggestion. </li>
             </ul>
-          <li> Bubble plot: </li>
+         <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
             <ul>
               <li> Color coding in bubble plot is changed to according to region. In initial implementation, different color was given to each state.  </li>
               <li> Formatting in tool tip is also changed as per feedback. </li>
              </ul> 
           
 
-            <li> Time series Plot - 
+        <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
             <ul>
             <li>  I implemented small multiple plot as per the feedback received on my prototype submission. </li>
             </ul>
             
-          <li> Parallel plot: </li>
+             <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
             <ul>
               <li> Parallel plot implementation during project prototype was having a bug. This is corrected now and also an extra line for population is added in this plot.  </li>
              </ul>  
@@ -131,18 +131,18 @@
 
          <div class="contentTitle"><h2>Challenges (overall)</h2>
             <ul>
-          <li> Choropleth plot: </li>
+          <li> <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li>
             <ul>
               <li> First challenge was to identify the state codes in Topo JSON for US. Most of the choropleth plots available on internet have shown zip code level plot on the US map. I could find state level codes, after some internet search <a href="https://gist.github.com/mbostock/4090846">here.</a>  </li>
               <li> I wanted to implement choropleth plot for each complaint type. I could implement this by providing a selection box.Without changing the color scale, plots were not informative. However, I could not dynamically change the color scale.   </li>
               <li> Another challenge was to remove the horizontal bar chart, before plotting a new one. I was not successful in my attempts. However, current functionality will be helpfun in comparing one state against the other. </li>
               </ul>
-           <li> Bubble plot: </li>
+      <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
             <ul>
               <li> I could figure out the logic for assigning values for X and Y axis and radius as per selection with some effort.</li>
             </ul>
 
-              <li> Time Series plot: </li>
+        <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
             <ul>
               <li>  Width of plot in M.Bostock's small mutiple implementaion was across whole page. It took some time for me to figure out reduce the width of plot.</li>
               <li> I implemented area plot with selection feature (along with zoom and brush features) before implementing small multiples. It was a bit challenging to club small multiple implementation with my earlier implemenatation of area plot. </li>
@@ -151,7 +151,7 @@
               <li> I tried to create show reel visualization of the dataset. In original impementation, visualizations change as per the set duration. I could not chnage this to mouse click and could not remove some visualizations in original sequence. I spent some time on figuring this out, but with no luck.  </li>
 
             </ul>
-             <li> Parallel plot: </li>
+               <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
             <ul>
               <li> I did not face much challenge for parallel plot implementation.</li>
             </ul>
@@ -168,23 +168,23 @@
 
           <div class="contentTitle"><h2>Conclusion (per visualization -or- overall)</h2>
                <ul>
-          <li> Choropleth plot: </li>
+          <li> <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> 
             <ul>
               <li> Total number of complaints per one million people is more in Delware, Maryland, NewHampshire, New Jersey, Georgia and Florida. This information will be useful to focus efforts to improve serives. </li>
             </ul>
 
-           <li> Bubble plot: </li>
+       <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
             <ul>
               <li> My hunch regarding correlation between number of complaints regarding mortage, credit card and debt collection seems to be right. </li>
               <li> States in North Central region seem to have less number of mortgage and credit card complaints compared to other states in the US.  </li>
              </ul> 
-            <li> Time Series plot: </li>
+           <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
             <ul>
               <li> From time series plot, it can be concluded that number of complaints against bank and its related services are constant across the time. </li>
               <li> There is an increase in Consumer product, Credit reporting and prepaid and student related complaints </li>
               </ul>
 
-           <li> Parallel plot: </li>
+             <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
             <ul>
               <li> All high populace states are having high number of complaints. </li>
               <li> Number of complaints registed in states in Western region are less compared to other states. One of the reasons could be the service offered by financial institutions are better in this region. </li>
