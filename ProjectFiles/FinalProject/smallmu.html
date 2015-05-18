@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+  margin: 0;
+}
+
+.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+
+svg {
+  font: 10px sans-serif;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 60px;                  
+  height: 28px;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}
+
+.area {
+  fill: steelblue;
+  clip-path: url(#clip);
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+
+
+</style>
+<body>
+  <div id="small"></div>
+  <p> Blank here </p>
+  <div id="Area"></div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script>
+
+var margin = {top: 8, right: 10, bottom: 2, left: 10},
+    width = 100 - margin.left - margin.right,
+    height = 69 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%Y%m").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+
+// var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+//     yAxis = d3.svg.axis().scale(y).orient("right");    
+
+var area = d3.svg.area()
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d.price); });
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.price); });
+
+d3.csv("newtime.csv", type, function(error, data) {
+
+  console.log(" XXX ",data);
+  // Nest data by symbol.
+  var symbols = d3.nest()
+      .key(function(d) { return d.symbol; })
+      .entries(data);
+
+  // Compute the maximum price per symbol, needed for the y-domain.
+  symbols.forEach(function(s) {
+    s.maxPrice = d3.max(s.values, function(d) { return d.price; });
+  });
+
+  // Compute the minimum and maximum date across symbols.
+  // We assume values are sorted by date.
+  x.domain([
+    d3.min(symbols, function(s) { return s.values[0].date; }),
+    d3.max(symbols, function(s) { return s.values[s.values.length - 1].date; })
+  ]);
+
+  // y.domain([
+  //   0,
+  //   d3.max(symbols, function(s) { return s.maxPrice; })
+  // ]);
+
+
+
+  // Add an SVG element for each symbol, with the desired dimensions and margin.
+  var svg = d3.select("#small").selectAll("svg")
+      .data(symbols)
+    .enter().append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .on("click",test);
+
+
+   // svg.append("g")
+   //    .attr("class", "x axis")
+   //    .attr("transform", "translate(0," + height + ")")
+   //    .call(xAxis)
+      
+
+
+  // svg.append("g")
+  //     .attr("class", "y axis")
+  //     .call(yAxis);
+
+
+  // Add the area path elements. Note: the y-domain is set per element.
+  svg.append("path")
+      .attr("class", "area")
+      .attr("d", function(d) { y.domain([0, d.maxPrice]); return area(d.values); });
+
+  // Add the line path elements. Note: the y-domain is set per element.
+  svg.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { y.domain([0, d.maxPrice]); return line(d.values); });
+
+  // Add a small label for the symbol name.
+  svg.append("text")
+      .attr("x", width - 6)
+      .attr("y", height - 6)
+      .style("text-anchor", "end")
+      .text(function(d) { return d.key; });
+});
+
+function type(d) {
+  d.price = +d.price;
+  d.date = parseDate(d.date);
+  return d;
+}
+
+function test(d){
+  // d3.selectAll("#Area").transition();
+  BigPlot(d);
+}
+
+
+
+function BigPlot(d){
+
+var valX = d.key;
+
+
+
+var margin = {top: 10, right: 10, bottom: 100, left: 40},
+    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom,
+    height2 = 500 - margin2.top - margin2.bottom;
+
+var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+var parseDate = d3.time.format("%Y%m").parse;
+
+var x = d3.time.scale().range([0, width]),
+    x2 = d3.time.scale().range([0, width]),
+    y = d3.scale.linear().range([height, 0]),
+    y2 = d3.scale.linear().range([height2, 0]);
+
+var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+    xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+    yAxis = d3.svg.axis().scale(y).orient("left");
+
+var brush = d3.svg.brush()
+    .x(x2)
+    .on("brush", brushed);
+
+var area = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d[valX]); });
+
+var area2 = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return x2(d.date); })
+    .y0(height2)
+    .y1(function(d) { return y2(d[valX]); });
+
+var svgA = d3.select("#Area").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .text(" LLLLL ");
+
+svgA.append("defs").append("clipPath")
+    .attr("id", "clip")
+  .append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+ svgA.append("text")
+        .attr("class", "title")
+        .attr("x", (width + margin.left + margin.right) /2.0)
+        .attr("y", 50)
+        .style("text-anchor", "middle");
+        // .text(" Time Series of Bank related Complaints");
+
+var focus = svgA.append("g")
+    .attr("class", "focus")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var context = svgA.append("g")
+    .attr("class", "context")
+    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+  console.log("I am in update", d.key);
+
+var XY;
+var G= x;
+
+var tip = d3.tip(XY)
+        .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(e) {
+              // console.log("i am in tooltip",XY);
+                return XY;
+                 });
+svgA.call(tip);
+d3.csv("monthlycomplaints.csv", type, function(error, data,valX) {
+
+  // data.forEach(function(d) {
+  //   d.date = parseDate(d.date);
+  // });
+  // console.log("XX ",vari);
+  // console.log("LL ",data);
+  x.domain(d3.extent(data.map(function(e) { 
+    return e.date; })));
+  y.domain([0, d3.max(data.map(function(e) { 
+    // console.log(e, ";;",d.key,e[d.key]);
+     return e[d.key]; }))]);
+  x2.domain(x.domain());
+  y2.domain(y.domain());
+
+  focus.append("path")
+      .datum(data)
+      .attr("class", "area")
+      .attr("d", area)
+      .on('mouseover',tip.show)
+      .on('mouseout', tip.hide)
+      // .on("mouseover", function() { focus.style("display", null); })
+      // .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove)
+      ;
+
+  console.log("Valx",d.key);
+
+
+  
+
+  function mousemove() {
+    // console.log("THis ",this);
+    var er0 = G.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, er0, 1),
+        es0 = data[i - 1],
+        d1 = data[i],
+        e = er0 - es0.date > d1.date - er0 ? d1 : es0;
+        console.log(" DD ",e.date);
+        var p = (e.date).toString("mm-yy");
+      XY = p+ " -- "+e[d.key]
+   return XY; 
+}
+
+
+ 
+
+  
+
+
+
+    // focus.attr("transform", "translate(" + e[d.key]+ ")");
+    // focus.select("text").text(d);
+    // focus.select("text").text(e[d.key]);
+ // .on('mouseover', tip.show)
+      // .on('mouseout', tip.hide);
+
+  focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      ;
+
+  focus.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  context.append("path")
+      .datum(data)
+      .attr("class", "area")
+      .attr("d", area2);
+
+  context.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+  context.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+    .selectAll("rect")
+      .attr("y", -6)
+      .attr("height", height2 + 7);
+});
+
+ 
+
+
+
+function brushed() {
+  console.log(" I am in brushed ");
+  x.domain(brush.empty() ? x2.domain() : brush.extent());
+  focus.select(".area").attr("d", area);
+  focus.select(".x.axis").call(xAxis);
+  console.log("area ",x.domain());
+  console.log(" ARea 2 ",area);
+  console.log("x2.domain() ",x2.domain());
+  // console.log(" ARea 2 ",areaX);
+}
+
+
+
+function type(d) {
+  d.date = parseDate(d.date);
+  d.Bank= +d.Bank;
+  d.Consumer = +d.Consumer;
+  d.Credit = +d.Credit;
+  d.Creporting= +d.Creporting;
+  d.Debt = +d.Debt;
+  d.transfers= +d.transfers;
+  d.Mortgage = +d.Mortgage;
+  d.Other = +d.Other; 
+  d.Payday = +d.Payday;
+  d.Prepaid= +d.Prepaid;
+  d.Student = +d.Student;
+  return d;
+}
+
+
+}
+
+
+
+
+
+</script>

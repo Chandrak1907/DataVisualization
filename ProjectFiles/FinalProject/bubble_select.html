@@ -1,0 +1,587 @@
+
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<style>
+body {
+  font: 11px sans-serif;
+  padding-top: 10em;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0.5, 0, 0.5, 0);
+  color: #843c39;
+  border-radius: 2px;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
+}
+</style>
+
+<body>
+  <div id="option">
+    <input name="updateButton" 
+           type="button" 
+           value="Click here After Selecting Below " 
+           onclick="updateData()" />
+</div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+
+<script>
+
+   var body = d3.select('body');
+  var selectData = [ { "text" : " " },
+                      { "text" : "Bank_account_or_service" },
+                     { "text" : "Consumer_loan" },
+                     { "text" : "Credit_card" },
+                     { "text" :"Credit_reporting"},
+                    { "text" :"Debt_collection"},
+                    { "text" :"Money_transfers"},
+                    { "text" :"Mortgage_Complaints"},
+                    { "text" :"Other_financial_service"},
+                    { "text" :"Payday_loan"},
+                    { "text" :"Prepaid_card"},
+                    { "text" :"Student_loan"}
+                   ]
+
+  var span = body.append('span')
+    .text('Select X-Axis variable: ')               
+ 
+  var xInput = body.append('select')
+      .attr('id','xSelect')
+      .on('change',xChange)
+      .selectAll('option')
+      .data(selectData)
+      .enter()
+    .append('option')
+      .attr('value', function (d) { return d.text })
+      .text(function (d) { return d.text ;})
+  body.append('br');
+console.log("xInput ",xInput);
+
+
+  var span = body.append('span')
+    .text('Select Y-Axis variable: ')
+
+  var yInput = body.append('select')
+      .attr('id','ySelect')
+      .on('change',yChange)
+      .selectAll('option')
+      .data(selectData)
+      .enter()
+    .append('option')
+      .attr('value', function (d) { return d.text })
+      .text(function (d) { return d.text ;})
+  body.append('br');
+console.log("yInput ",yInput);
+
+ var span = body.append('span')
+    .text('Select Radius  : ')
+
+  var rInput = body.append('select')
+      .attr('id','rSelect')
+      .on('change',rChange)
+      .selectAll('option')
+      .data(selectData)
+      .enter()
+    .append('option')
+      .attr('value', function (d) { return d.text })
+      .text(function (d) { return d.text ;})
+  body.append('br');
+console.log("rInput ",rInput);
+
+// plot("Bank_account_or_service");
+var valX,valY,valR;
+function xChange() {
+      valX = this.value // get the new x value
+    console.log("valueX ",valX);
+    // plot(valX);
+    // nation();
+    // return valX;
+  }
+
+ function yChange() {
+      valY = this.value // get the new x value
+    console.log("valueY ",valY);
+    // plot(valX);
+    // nation();
+    // return valX;
+  }
+  function rChange() {
+      valR = this.value // get the new x value
+    console.log("valueR ",valR);
+    // plot(valX);
+    // nation();
+    // return valX;
+  } 
+
+
+
+
+
+var margin = {top: 100, right: 100, bottom: 30, left: 100},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// var radius = function(d){
+//                 return d.
+//               }
+
+ function order(a, b) {
+  console.log("in order function");
+  //   console.log(a);
+  //   console.log("--++")
+  //   console.log(Rvalue(a));
+  //   console.log(" --- ")
+    return Rvalue(b) - Rvalue(a);
+  }
+/* 
+ * value accessor - returns the value to encode for a given data object.
+ * scale - maps value to a visual display encoding, such as a pixel position.
+ * map function - maps from data value to display value
+ * axis - sets up axis
+ */ 
+
+// setup x 
+var xValue = function(d) { //console.log(d);
+                      //console.log(d.Illitearcy);
+                     return d.Credit_card;}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { 
+                        //console.log((xValue(d))) ;
+                        return (xScale(xValue(d))) ;}, // data -> display
+
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(d) { return d.Mortgage_Complaints;}, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+ var Rvalue = function(d) { //console.log(d.Population);
+                              return Math.sqrt(d.Debt_collection/5);};
+
+
+// setup fill color
+var cValue = function(d) { return d.region;},
+    color = d3.scale.category10();
+
+// add the graph canvas to the body of the webpage
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right+margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom+ margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// add the tooltip area to the webpage
+var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+
+
+
+// load data
+
+//data =  d3.json("state77.json",draw);
+d3.csv("Bubble17May.csv", function(error, data) {
+
+
+
+  console.log(data);
+  console.log(valX, valR,valY);
+  // change string (from CSV) into number format
+  data.forEach(function(d) {
+
+    // console.log("I am in forEACH function")
+    d.Credit_card = Number(d.Credit_card);
+    d.Mortgage_Complaints = Number(d.Mortgage_Complaints);
+    d.Debt_collection = Number(d.Debt_collection);
+      
+/*
+    d.Illitearcy = +d.Illitearcy;
+    d.Murder = +d.Murder
+    d.Population = +d.Population;
+    //d.Calories = +d.Calories;*/
+    // d["Protein (g)"] = +d["Protein (g)"];
+   // console.log(d);
+  });
+
+  
+  console.log(data);
+  console.log(" MIN AND MAX");
+  var rmin = (d3.min(data, function(d) { return d.Debt_collection; }));
+  var rmax = (d3.max(data, function(d) { return d.Debt_collection; }));
+
+
+  // don't want dots overlapping axis, so add in buffer to data domain
+  // xScale.domain([d3.min(data, xValue)-0.5, d3.max(data, xValue)+1]);
+  xScale.domain([0, d3.max(data, xValue)+1]);
+  // yScale.domain([d3.min(data, yValue)-0.5, d3.max(data, yValue)+1]);
+  yScale.domain([0, d3.max(data, yValue)+1]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Credit Card");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Mortgage")
+
+  svg.append("text")
+    .text(" Plot of Credit Card vs Mortage with Debt Collection Complaints as Radius")
+    .attr("font-size","16px")
+    .attr("x", width / 2 )
+    .attr("y", -70)
+    .style("text-anchor", "middle")
+    // .text("Title of Diagram");
+    //   .append("text")
+    //   .text("Bar Chart")
+    //   .attr("x", width / 2)
+    //   .attr("class","title");
+  // draw dots
+
+
+  var tip = d3.tip()
+        .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+    return "<br> <strong>State</strong> <span style='color:black'>" + d.State+ "  "+ "</span></br>"
+          +"<br><strong>Mortgage:</strong> <span style='color:black'>" + d.Mortgage_Complaints.toFixed(2) + "</span></br>"
+           +"<br><strong>Credit card:</strong> <span style='color:black'>" + d.Credit_card.toFixed(2) + "</span></br>"
+           +"<br><strong>Debt collection:</strong> <span style='color:black'>" + d.Debt_collection.toFixed(2) + "</span></br>";
+  });
+
+  svg.call(tip)
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", Rvalue)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("opacity", .75)
+      .style("fill", function(d) { return color(cValue(d));})
+      .sort(order)
+      on("mouseover", function() { focus.style("display", null); })
+      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  function mousemove() {
+    console.log(this);
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.front) + ")");
+    // focus.select("text").text(d);
+    focus.select("text").text(d.date+"  "+d.front);
+  }
+      // .on('mouseover', tip.show)
+      // .on('mouseout', tip.hide)
+      /*.on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9)});
+          
+          /*tooltip.html(d["Cereal Name"] + "<br/> (" + xValue(d) 
+	        + ", " + yValue(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);*/
+      //});
+
+
+  // draw legend
+  var legend = svg.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend.append("rect")
+      .attr("x", width +70)
+      .attr("width", 20)
+      .attr("height", 20)
+      .style("fill", color);
+
+  // draw legend text
+  legend.append("text")
+      .attr("x", width +90)
+      .attr("y", 10)
+      .attr("dy", ".10em")
+      // .style("text-anchor", "end")
+      .text(function(d) { return d;})
+});
+
+
+function updateData(){
+
+  if((valX!=valY) && (valY!=valR) && (valX != valR))
+  {
+  var xValue = function(d) { //console.log(d);
+                      //console.log(d.Illitearcy);
+                     return d[valX];}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { 
+                        //console.log((xValue(d))) ;
+                        return (xScale(xValue(d))) ;}, // data -> display
+
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(d) { return d[valY];}, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+ var Rvalue = function(d) { //console.log(d.Population);
+                              return Math.sqrt(d[valR]/5);};
+
+
+  d3.select("svg").remove();
+  
+  var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right+margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom+ margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// d3.selectAll("#body").remove();
+d3.csv("Bubble17May.csv", function(error, data) {
+
+ 
+
+  console.log(" line 366 ",data);
+  console.log(valX, valR,valY);
+  // change string (from CSV) into number format
+  data.forEach(function(d) {
+   d.Bank_account_or_service = Number(d.Bank_account_or_service);
+   d.Consumer_loan  = Number(d.Consumer_loan);
+   d.Credit_reporting  = Number(d.Credit_reporting);
+   
+   d.Money_transfers  = Number( d.Money_transfers);
+   
+   d.Other_financial_service  = Number( d.Other_financial_service);
+   d.Payday_loan = Number( d.Payday_loan);
+   d.Prepaid_card  = Number( d.Prepaid_card);
+   d.Student_loan   = Number(d.Student_loan);
+   d.Total = Number( d.Total);
+    // console.log("I am in forEACH function")
+    d.Credit_card = Number(d.Credit_card);
+    d.Mortgage_Complaints = Number(d.Mortgage_Complaints);
+    d.Debt_collection = Number(d.Debt_collection);
+      
+/*
+    d.Illitearcy = +d.Illitearcy;
+    d.Murder = +d.Murder
+    d.Population = +d.Population;
+    //d.Calories = +d.Calories;*/
+    // d["Protein (g)"] = +d["Protein (g)"];
+   // console.log(d);
+  });
+
+  
+  console.log(data);
+  console.log(" MIN AND MAX");
+  var rmin = (d3.min(data, function(d) { return d.Debt_collection; }));
+  var rmax = (d3.max(data, function(d) { return d.Debt_collection; }));
+  var xmax = (d3.max(data, function(d) { return d[valX]; }));
+  console.log(" xMAx ",xmax);
+  var ymax = (d3.max(data, function(d) { return d[valY]; }));
+  console.log(" yMAx ",ymax);
+  // don't want dots overlapping axis, so add in buffer to data domain
+  // xScale.domain([d3.min(data, xValue)-0.5, d3.max(data, xValue)+1]);
+  xScale.domain([0, xmax]);
+  // yScale.domain([d3.min(data, yValue)-0.5, d3.max(data, yValue)+1]);
+  yScale.domain([0, ymax]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text(valX);
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(valY);
+
+  svg.append("text")
+    .text("Plot of "+valX+" vs "+valY+ " with "+valR+" as Radius")
+    .attr("font-size","16px")
+    .attr("x", width / 2 )
+    .attr("y", -70)
+    .style("text-anchor", "middle");
+    // .text("Title of Diagram");
+    //   .append("text")
+    //   .text("Bar Chart")
+    //   .attr("x", width / 2)
+    //   .attr("class","title");
+  // draw dots
+
+
+  var tip2 = d3.tip()
+        .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+    return "<br> <strong>State</strong> <span style='color:black'>" + d.State+ "  "+ "</span></br>"
+          +"<br><strong>"+valX+":</strong> <span style='color:black'>" + d[valX].toFixed(2) + "</span></br>"
+           +"<br><strong>"+valY+":</strong> <span style='color:black'>" + d[valY].toFixed(2) + "</span></br>"
+           +"<br><strong>"+valR+":</strong> <span style='color:black'>" + d[valR].toFixed(2) + "</span></br>";
+  });
+
+  svg.call(tip2)
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", Rvalue)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("opacity", .75)
+      .style("fill", function(d) { return color(cValue(d));})
+      .sort(order)
+      .on('mouseover', tip2.show)
+      .on('mouseout', tip2.hide);
+      /*.on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9)});
+          
+          /*tooltip.html(d["Cereal Name"] + "<br/> (" + xValue(d) 
+          + ", " + yValue(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);*/
+      //});
+
+
+  // draw legend
+  var legend = svg.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend.append("rect")
+      .attr("x", width +70)
+      .attr("width", 20)
+      .attr("height", 20)
+      .style("fill", color);
+
+  // draw legend text
+  legend.append("text")
+      .attr("x", width +90)
+      .attr("y", 10)
+      .attr("dy", ".10em")
+      // .style("text-anchor", "end")
+      .text(function(d) { return d;})
+});
+}
+else{
+d3.select("svg").remove();
+  
+  var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right+margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom+ margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.append("text")
+    .text("Please check selection")
+    .attr("font-size","16px")
+    .attr("x", width / 2 )
+    .attr("y", -70)
+    .style("text-anchor", "middle");
+
+}
+
+
+}
+
+
+</script>
+</body>
+</html>
