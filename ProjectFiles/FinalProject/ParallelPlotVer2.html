@@ -37,12 +37,18 @@ svg {
 
 </style>
 <body>
+  <div class="media">
+            <div class="media-left">
+                <a href="http://chandrak1907.github.io/DataVisualization/FinalReport.html">
+                    <img class="media-object" src="back.jpg" style="width: 30px; height: 20px;">
+                </a>
+            </div>
 <script src="http://d3js.org/d3.v3.min.js"></script> 
 <script>
 
 var margin = {top: 30, right: 10, bottom: 10, left: 30},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 1060 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal().rangePoints([0, width-40], 1),
     y = {},
@@ -60,8 +66,8 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
  svg.append("text")
-    .text(" Parallel Plot - CFPB Region-wise Complaints Data")
-    .attr("font-size","26px")
+    .text(" Parallel Plot of Complaints Logged with Consumer Financial Protection Bureau")
+    .attr("font-size","20px")
     .attr("x", width / 2 )
     .attr("y", 0)
     .style("text-anchor", "middle")

@@ -13,46 +13,51 @@
       </div>
   
         <div class="contentTitle"><h2>Techniques </h2>
-          Dataset consists of complaints logged on Consumer Financial Protection Bureau (CFPB.gov) website. Each comaplaint consits of information regarding complaint received  regarding one of the financial products: Product, Sub Product, Issue, Subissue, State, Zipcode, Submitted via, Date Received, Date sent to company, Company, Company response, Timely response, Consumer Disputed.  Objective of visualisation of this dataset is to answer below questions:
+          Dataset consists of complaints logged on the Consumer Financial Protection Bureau (CFPB.gov) website. Each complaint consists of information regarding complaint received  regarding one of the financial products: Product, Sub Product, Issue, Sub-issue, State, Zip-code, Submitted via, Date Received, Date sent to company, Company, Company response, Timely response, Consumer Dispute.
+          <br>
+          <br>
+           This data visualization exercise is exploratory in nature. Nothing is known about this dataset so far. There are complaints against 2801 financial institutions in this dataset. Therefore, it will not be possible to ascertain the performance of a financial institution in a single visualization across all geographies. This is an attempt to look at the overall nature of complaints in the US after establishing the CFPB.
+
+          The objective of this visualization project is to answer the questions below :
           <ul>  
-            <li> People in which US state have logged  more complaints? </li>
-            <li> Which is the most frequently complained service about? </li>
-            <li> Is there any correlation between type of complaints? </li>
-            <li> What is the trend of complaints so far, after establishing CFPB? </li>
+            <li> Which US state has the most logged  complaints? </li>
+            <li> What complain is the most frequently filed? </li>
+            <li> Is there any correlation between types of complaints? </li>
+            <li> What is the trend of complaints so far, after establishing the CFPB? </li>
            </ul> 
-           For this purpose, from original dataset different four different sets are derived and below techniques were implemented these derived datasets:
+           For this purpose, I have derived four different sets from the original dataset and implemented below visualization techniques on these derived datasets. For ease of reading this report and looking at visualizations, back button  (<img class="media-object" src="back.jpg" style="width: 30px; height: 20px;">) is added to each visualization on top to get back to this report.
           <ul>
             <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li>
-                  From original dataset, state wise number of complaints for each financial product or service is derived. Rows without state name are ignored. As, some of the US states are having less population compared to the other states, this dataset is normalized by deriving number of complaints per one million people.In choropleth plot, total number of comaplints per one million people are shown. And also an histogram of distribution of total number of complaints per one million people is shown at the top of the US map.
+                  From the original dataset, the state wise number of complaints for each financial product or service is derived. Rows without state names are ignored. As some of the US states are less populous compared to the other states, this dataset is normalized by deriving the number of complaints per one million people.In the choropleth plot, the total number of complaints per one million people are shown. Also a histogram of the distribution of the total number of complaints per one million people is shown at the top of the US map.
                   <ul>
                   <li> Lie factor - After normalizing the dataset, this plot has less lie factor. </li>
-                  <li> Data-ink ratio - All the ink was used to signify the distribution of data or color each state on map of the US. </li>
-                  <li> Data-density - Data density of this map is normal. Instead of showing information for all 50 states of US map in a barchart, I have shown the information on map of the US.  </li>
+                  <li> Data-ink ratio - All the ink was used to signify the distribution of data or to color each state on map of the US. </li>
+                  <li> Data-density - Data density of this map is appropriate to the information shown. Instead of showing information for all 50 states of the US map in a bar chart, I have shown the information on map of the US.  </li>
                 </ul>
 
             <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
-                  I had a hunch that as there is a correlation between mortgage complaints, credit card and debt collection related complaints. So, I used bubble plot to verify this and identify if any other correlation exists. In bubble plot, number of complaints per one million people for each catergory is used.
+                  I had a hunch that there is a correlation between mortgage complaints, credit card and debt collection related complaints. Thus, I used a bubble plot to verify this and identify if any other correlations exist. In bubble plot, number of complaints per one million people for each category are used.
                   <ul>
                     <li> Lie-factor - This plot uses normalized dataset. Therefore, this plot has no lie factor.  </li>
-                    <li> Data-ink ratio - is high. Ink is used to plot necessary information and legend only. </li>
-                    <li> Data-density - Data density is normal.  </li>
+                    <li> Data-ink ratio is high. Ink is used to plot necessary information and legend only. </li>
+                    <li> Data density is normal.  </li>
                   </ul>
 
             <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
-                    Time series plot is drawn to identify the trends in the dataset. Small multiples of  dataset are drawn at the top. On clicking any of the small multiple plots, area plot corresponding to that small multiple will be drawn below.
+                    The time series plot is drawn to identify the trends in the dataset. Small multiples of  dataset are drawn at the top. Upon clicking any of the small multiple plots, the area plot corresponding to that small multiple will be drawn below.
                      <ul>
                     <li> Lie-factor - This plot is a time series plot. There is no lie factor in this plot  </li>
-                    <li> Data-ink ratio - is a bit low. I have drawn area plots for aesthetic purpose. Therefore,  data-ink ratio is less than that of a corresponding line plot. </li>
-                    <li> Data-density - Data density is normal.  </li>
+                    <li> Data-ink ratio is a bit low. I have drawn area plots for aesthetic purposes. Therefore,  data-ink ratio is less than that of a corresponding line plot. </li>
+                    <li> Data density is normal.  </li>
                   </ul>
 
 
             <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
-                 As this is an exploratory exerice  to identfiy patterns in given dataset, parallel plot is drawn. Population statistics used for normalizing the original dataset is included in this plot.  
+                 As this is an exploratory exercise  to identify patterns in given dataset, parallel plot is drawn. Population statistics used for normalizing the original dataset are included in this plot.  
                   <ul>
-                     <li> Lie-factor - There is no lie factor in parallel plot. It represents original data.  </li>
-                    <li> Data-ink ratio - is high. Ink is used plot lines connecting related data points. </li>
-                    <li> Data-density - Data density is normal.  </li>
+                     <li> Lie-factor - There is no lie factor in parallel plot. It represents the original data.  </li>
+                    <li> Data-ink ratio  is high. Ink is used plot lines connecting related data points. </li>
+                    <li> Data-density is normal.  </li>
                   </ul>
 
 
@@ -63,39 +68,39 @@
          <div class="contentTitle"><h2>Interactivity  </h2>
 
             <ul> 
-              <li> <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> -  In choropleth plot below interactive features are implemented.
+               <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li>   In choropleth plot the following interactive features are implemented.
                   <ul>
                     <li> Brushing feature on histogram - If a bar with a particular value is selected, then states falling within that numeric range will be highlighted on the US map . </li>
-                    <li> Further ther is an option to drag the selection in brushing feature. Two rectancles  will appear as soon as a bar is selected on histogram. This selection can be changed by dragging rectanles on either side.  </li>
-                    <li> Reset button is provided to clear the selection on histogram. </li> 
-                    <li> Color legend to indicate the numeric behind each color in the map is provided. </li>
-                    <li> Tool tip on the US map - Tool tip functionality on map of the US provides state name and total number of complaints per one million people in that state. </li>
-                    <li> When a state is clicked, number of comaplaints per one million people for each complaint is shown in a horizontal bar at the bottom of chart.</li>
+                    <li> Furthermore, there is an option to drag the selection in brushing feature. Two rectangles  will appear as soon as a bar is selected on histogram. This selection can be changed by dragging the rectangles on either side.  </li>
+                    <li> A reset button is provided to clear the selection on histogram. </li> 
+                    <li> A color legend to indicate the numeric behind each color in the map is provided. </li>
+                    <li> Tool tip on the US map - Tool tip provides the state name and total number of complaints per one million people in that state. </li>
+                    <li> When a state is clicked, the number of complaints per one million people for each complaint is shown in a horizontal bar at the bottom of chart.</li>
                   </ul>
 
                 <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
                   <ul>
-                  <li> Select boxes - In bubble plot, I provided select boxes to select variables for  X-axis, Y-axis and Radius variable. All these variables should be different to generate plot. </li>
-                   <li> Tool tip - Tool tip is shown to provide information regarding each bubble in plot. </li>
-                  <li> Legend - Legend in the plot shows color code for each region. Each bubble is color coded with region. </li>
+                  <li> Select boxes - In bubble plot, I provided select boxes to select variables for  X-axis, Y-axis and radius variable. All these variables should be different to generate the plot. </li>
+                   <li> Tool tip - A tool tip is shown to provide information regarding each bubble in the plot. </li>
+                  <li> Legend - A legend in the plot shows the color code for each region. Each bubble is color coded with region. </li>
 
                   </ul>
 
                  <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
                   <ul>
-                  <li>  Small multiple plots are drawn at the top of chart to give an overall view of trend of each complaint type over the period of time from 2011 till Apr'15. </li>
-                  <li> Clicking any of the multiple plot will show area plot corresponding to that small multiple. </li>
-                  <li> On area plot, zoom and brush functionalities are implemented. </li>
-                  <li> Also, tool tip in area plot shows number of complaints and date.  </li>
+                  <li>  Small multiple plots are drawn at the top of chart to give an overall view of trend of each complaint type over the period of time from 2011 until Apr'15. </li>
+                  <li> Clicking any of the multiple plots will show an area plot corresponding to that small multiple. </li>
+                  <li> On each area plot, zoom and brush functionalities are implemented. </li>
+                  <li> Also, the tool tip in area plot shows the number of complaints and date.  </li>
                   </ul>
 
                 
 
-                <li>    <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
+               <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
                   <ul>
-                  <li> Brushing feature - Brushing feature is implemented in this plot to highlight a range and to highlight corresponding data points. </li>
-                   <li> A feature to move parallel plot axis is also implemented. This will be useful for analyzing data with respect to a feature. </li>
-                  <li> Legend - Legend in the plot shows color code for each region. Each line in this plot is color coded with a color corresponding to a region. </li>
+                  <li> Brushing feature - This feature is implemented in this plot to highlight a range and to highlight corresponding data points. </li>
+                   <li> A feature to move parallel plot axes is also implemented. This will be useful for analyzing data with respect to a feature. </li>
+                  <li> Legend - This shows color code for each region. Each line in this plot is color coded with a color corresponding to a region. </li>
 
                   </ul>
 
@@ -106,25 +111,25 @@
           <ul>
          <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> 
             <ul>
-              <li> In initial implementation, I plotted total number of mortgage complaints. During prototype feedback session, it was told that information in the plot is not normalized as number of people living in each state are not equal in each state.  I accepted this suggestion and normalized the dataset by dividing population. Further, I modified the sketch plot (where in, I plotted number of mortagage complaints) by showing total number of complaints per one million people.
+              <li> In my initial implementation, I plotted the total number of mortgage complaints. During the prototype feedback session, I was told that the information in the plot is not normalized (since the number of people living in each state are not equal in each state).  I accepted this feedback and normalized the dataset by dividing the number of complaints in each state with respective population. Further, I modified the sketch plot by showing the total number of complaints (instead of number of mortgage complaints) per one million people.
                  </li>
-              <li> In horizontal bar chart, I showed X-axis. Prof.Sophie's feedback was to remove X-axis as it is not adding extra information. I accepted this suggestion and removed X-axis. </li>
+              <li> In horizontal bar chart, I showed X-axis. Prof.Engle's feedback was that X-axis is not adding extra information. I accepted this suggestion and removed the X-axis. </li>
             </ul>
          <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
             <ul>
-              <li> As per Prof.Sophie's suggestion, color coding in bubble plot is changed. In initial implementation, different color was given to each state.  Color coding changed to show region.</li>
-              <li> Formatting in tool tip is also changed as per feedback. </li>
+              <li> As per Prof.Engle's suggestion, color coding in the bubble plot is changed. In my initial implementation, a different color was given to each state. I have changed  color coding to show region.</li>
+              <li> In my prototype, formatting in tool tip was not proper. Formatting in tool tip is also changed as per feedback. </li>
              </ul> 
           
 
         <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
             <ul>
-            <li>  I implemented small multiple plot as per the feedback received on my prototype submission. </li>
+            <li> After fiasco with prototype implementation of time series, I implemented small multiple plots as per the feedback received on area plots. First, I referred M.Bostock's implementation of area chart with brush and zoom features. I modified this chart to implement a selection feature. Later, I referred to small multiples chart. Then, combined these two implementations in one visualization.  </li>
             </ul>
             
              <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
             <ul>
-              <li> Parallel plot implementation during project prototype was having a bug. This is corrected now and also an extra line for population is added in this plot.  </li>
+              <li> Parallel plot implementation for project prototype had a bug. This is corrected now and also I have added an extra line for population in this plot.  </li>
              </ul>  
              </ul>  
 
@@ -132,29 +137,29 @@
 
          <div class="contentTitle"><h2>Challenges (overall)</h2>
             <ul>
-          <li> <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li>
+        <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li>
             <ul>
-              <li> First challenge is to identify the state codes in Topo JSON for US. Most of the choropleth plots available on internet have shown zip code level plot on the US map. I could find state level codes, after some internet search <a href="https://gist.github.com/mbostock/4090846">here.</a>  </li>
-              <li> I wanted to implement choropleth plot for each complaint type. I could implement this by providing a selection box. Without changing the color scale according to minimum and maximum value of selected variable, this plot is not informative. However, I could not dynamically change the color scale.   </li>
-              <li> Another challenge is to remove the horizontal bar chart, before plotting a new one. I was not successful in my attempts. However, current functionality will be helpful in comparing one state against the other. </li>
+              <li> The first challenge was to identify the state codes in Topo JSON format for US. Most of the choropleth plots available on the Internet have shown zip code level plot of the US map. Finally, I could find state level codes <a href="https://gist.github.com/mbostock/4090846">here.</a>  </li>
+              <li> I wanted to implement a choropleth plot for each complaint type. I could implement this by providing a selection box. Without changing the color scale according to minimum and maximum value of selected variable, this plot is not so informative. However, I could not dynamically change the color scale.   </li>
+              <li> Another challenge was to remove the horizontal bar chart, before plotting a new one. I was not successful in my attempts to replace the plot. I faced similar problem with my time series implementation. I sought Prof. Engle's help for time series implementation. I used her suggestion to remove the old plot and plot a new bar chart in the same place. </li>
               </ul>
       <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
             <ul>
-              <li> I could figure out the logic for assigning values for X and Y axis and radius as per selection with some effort.</li>
+              <li> I could figure out the logic for assigning values for the X and Y axes and radius as per selection with some effort. I faced some trouble in adjusting the height and width of plot to make it aesthetically appealing.  </li>
             </ul>
 
         <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
             <ul>
-              <li>  Width of plot in M.Bostock's small mutiple implementaion was across whole page. It took some time for me to figure out reduce the width of plot.</li>
-              <li> I implemented area plot with selection feature (along with zoom and brush features) before implementing small multiples. It was a bit challenging to club small multiple implementation with my earlier implemenatation of area plot. </li>
-              <li> Implementating tool tip in area plot is also a challenge. Values in tool tip are shown in the center of the plot. I am not able to move the values as the mouse moves across the scren.  I think my tool tip functionality is not satisfactory. I will try to improve this.  </li>
-              <li> Removing the already drawn area plot is also a challenge. I am able to add a new area plot at the bottom of earlier plot. But, I am not able to replace the plot and draw a new one in the same place.   </li>
-              <li> I tried to create show reel visualization of the dataset. In original impementation, visualizations change as per the set duration. I could not chnage this to mouse click and could not remove some visualizations in original sequence. I spent some time to figure this out, but with no luck.  </li>
+              <li>  Width of plot in M.Bostock's small multiple implementation was across a whole page. It took some time for me to figure out how to reduce the width of plot.</li>
+              <li> I implemented the area plot with selection feature (along with zooming and brushing features) before implementing small multiples. It was a bit challenging to combine small multiple implementation with my earlier implementation of the area plot. </li>
+              <li> Implementing tool tip in area plot was also a challenge. Values in tool tip are shown in the center of the plot. I am not able to move the values as the mouse moves across the screen.  I think my tool tip functionality is not satisfactory. I will try to improve this.  </li>
+              <li> Removing the already drawn area plot is also a challenge. I am able to add a new area plot at the bottom of earlier plot. Prof. Engle helped me in solving this problem.  </li>
+              <li> I tried to create show reel visualization of the dataset. In original implementation, visualizations change as per the set duration. I could not change this to mouse click and could not remove some visualizations in  original sequence. I spent some time trying to figure this out, but had no luck.  </li>
 
             </ul>
                <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
             <ul>
-              <li> I did not face much challenge for parallel plot implementation.</li>
+              <li> I did not face much challenges for parallel plot implementation.</li>
             </ul>
 
        <!--    <li> Overall: </li>
@@ -169,32 +174,32 @@
 
           <div class="contentTitle"><h2>Conclusion (per visualization -or- overall)</h2>
                <ul>
-          <li> <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> 
+           <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/Choro_Final.html">Choropleth Plot:</a> </li> 
             <ul>
-              <li> Total number of complaints per one million people is more in Delware, Maryland, NewHampshire, New Jersey, Georgia and Florida. This information will be useful to focus efforts to improve serives. </li>
+              <li> The total number of complaints per one million people is greatest in Delware, Maryland, NewHampshire, New Jersey, Georgia and Florida. This information will be useful to focus efforts to improve services. </li>
             </ul>
 
        <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/bubble_select.html"> Bubble Plot: </a> </li>
             <ul>
-              <li> My hunch regarding correlation between number of complaints regarding mortage, credit card and debt collection seems to be right. </li>
-              <li> States in North Central region seem to have less number of mortgage and credit card complaints compared to other states in the US.  </li>
+              <li> My hunch regarding correlation between number of complaints regarding mortgage, credit card and debt collection seems to be right. </li>
+              <li> States in the North Central region of the US seem to have less number of mortgage and credit card complaints compared to other states in the US.  </li>
              </ul> 
            <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/smallmu.html">Time Series plot:</a> </li>
             <ul>
-              <li> From time series plot, it can be concluded that number of complaints against bank and its related services are constant across the time. </li>
+              <li> From time series plot, it can be concluded that the number of complaints against banks and their related services are constant across the time. </li>
               <li> There is an increase in consumer product, credit reporting and prepaid and student related complaints </li>
               </ul>
 
              <li> <a href="http://chandrak1907.github.io/DataVisualization/ProjectFiles/FinalProject/ParallelPlotVer2.html">Parallel plot: </a> </li>
             <ul>
               <!-- <li> All high populace states are having high number of complaints. </li> -->
-              <li> Number of complaints registed in states in Western region are less compared to other states. One of the reasons could be the service offered by financial institutions are better in this region. </li>
+              <li> The number of complaints registered in states in the western region are less when compared to other states. One of the reasons could be the service offered by financial institutions are better in this region. </li>
           </ul>
           <li> Overall Conclusions & Scope for further work: </li>
             <ul>
-              <li> This data visualization exerice is exploratory in nature. Nothing is known about this dataset or variables in it so far. There are complaints against 2801 financial institutions in this dataset. Therefore, it will not be possible to ascertain the performance of a financial institution in a single visualization across all geographies. This is an attempt to look at the overall nature of complaints in the US after instituting CFPB </li>
-              <li> Similar exercise for  financial institutions constributing to 80% of complaints will throw more light into their performance across all states in the US. </li>
-              <li> Further, coupling this data with number of branches or people serving in each state for a financial institution will give necessary direction to management of financial institutions to better resource/train their staff across all states in the US. </li>
+              
+              <li> A similar exercise conducted for  financial institutions, contributing to 80% of complaints could throw more light onto their performance across all states in the US. </li>
+              <li> Furthermore, coupling this data with the number of branches or people serving in each state for a financial institution will give necessary direction to management of financial institutions to better resource/train their staff across all states in the US. </li>
             </ul>
 
           </div>

@@ -100,12 +100,11 @@ function ready(error, us) {
  function update(d){
           console.log(" -- ",popById.get(d.id));
           x= popById.get(d.id);
-          // d3.selectAll('#scatterPlot').remove();
           cr(x);
           // bottombar(x);
            // cur = d.name;
            // updateScatterPlot(d.name ,color(d.name), pre, cur);
-           // updateBarChart(d.name, color(d.name), pre, cur);
+           // updateBarChart(d.name, color(d.name),e, cur);
            // pre = cur;
         }
 
@@ -472,6 +471,7 @@ var yAxis = d3.svg.axis()
 
 // var svg1 = d3.select("#scatterPlot").transition();
 // d3.select("svg1").remove();
+d3.select('#scatterPlot').selectAll("svg").remove();
 var svg1 = d3.select("#scatterPlot")
       // .transition()
       .append("svg")
@@ -517,7 +517,7 @@ console.log("598",data);
         .attr("x", (width + margin.left + margin.right) /2.0)
         .attr("y", -2)
         .style("text-anchor", "middle")
-        .text("Number of Complaints Registered in "+arr[arr.length-1]);
+        .text("State "+arr[arr.length-1] +" -- Number of Complaints per 1M people");
     
 
 

@@ -5,7 +5,7 @@
 <style>
 body {
   font: 11px sans-serif;
-  padding-top: 10em;
+  /*padding-top: 10em;*/
 }
 
 .axis path,
@@ -48,7 +48,15 @@ body {
   text-align: center;
 }
 
-
+.option {
+    /*display: block;*/
+    padding: 10px;
+    margin-bottom: 500px; /* SIMPLY SET THIS PROPERTY AS MUCH AS YOU WANT. This changes the space below box1 */
+    /*text-align: justify;*/
+}
+.button {
+    background-color: steelblue;
+}
 .tooltip {
   position: absolute;
   width: 200px;
@@ -56,21 +64,24 @@ body {
   pointer-events: none;
 }
 </style>
-
 <body>
-  <div id="option">
-    <input name="updateButton" 
-           type="button" 
-           value="Click here After Selecting Below " 
-           onclick="updateData()" />
-</div>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
+<div class="media">
+            <div class="media-left">
+                <a href="http://chandrak1907.github.io/DataVisualization/FinalReport.html">
+                    <img class="media-object" src="back.jpg" style="width: 30px; height: 20px;">
+                </a>
+            </div>
 
-<script>
 
-   var body = d3.select('body');
+<div id="title"><h1 style="font-size:200%">Bubble Plot to identify correlations in Complaints with Consumer Financial Protection Bureau</h1></div>
+
+<div id="temp">
+  <script>
+     var body = d3.select('body');
   var selectData = [ { "text" : " " },
                       { "text" : "Bank_account_or_service" },
                      { "text" : "Consumer_loan" },
@@ -131,7 +142,7 @@ console.log("yInput ",yInput);
   body.append('br');
 console.log("rInput ",rInput);
 
-// plot("Bank_account_or_service");
+
 var valX,valY,valR;
 function xChange() {
       valX = this.value // get the new x value
@@ -157,12 +168,30 @@ function xChange() {
   } 
 
 
+</script>
+</div>
+
+<div id="option">
+    <input name="updateButton" 
+           type="button" 
+           value="Click here After Selecting Above " 
+           onclick="updateData()" />
+</div>
+
+
+<script>
 
 
 
-var margin = {top: 100, right: 100, bottom: 30, left: 100},
+// plot("Bank_account_or_service");
+
+
+
+
+
+var margin = {top: 150, right: 100, bottom: 30, left: 100},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
 // var radius = function(d){
 //                 return d.
@@ -290,7 +319,7 @@ d3.csv("Bubble17May.csv", function(error, data) {
     .text(" Plot of Credit Card vs Mortage with Debt Collection Complaints as Radius")
     .attr("font-size","16px")
     .attr("x", width / 2 )
-    .attr("y", -70)
+    .attr("y", -115)
     .style("text-anchor", "middle")
     // .text("Title of Diagram");
     //   .append("text")
@@ -321,9 +350,11 @@ d3.csv("Bubble17May.csv", function(error, data) {
       .style("opacity", .75)
       .style("fill", function(d) { return color(cValue(d));})
       .sort(order)
-      on("mouseover", function() { focus.style("display", null); })
-      .on("mouseout", function() { focus.style("display", "none"); })
-      .on("mousemove", mousemove);
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
+      // .on("mouseover", function() { focus.style("display", null); })
+      // .on("mouseout", function() { focus.style("display", "none"); })
+      // .on("mousemove", mousemove);
 
   function mousemove() {
     console.log(this);
@@ -487,7 +518,7 @@ d3.csv("Bubble17May.csv", function(error, data) {
     .text("Plot of "+valX+" vs "+valY+ " with "+valR+" as Radius")
     .attr("font-size","16px")
     .attr("x", width / 2 )
-    .attr("y", -70)
+    .attr("y", -115)
     .style("text-anchor", "middle");
     // .text("Title of Diagram");
     //   .append("text")

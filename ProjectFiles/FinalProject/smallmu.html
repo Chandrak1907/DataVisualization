@@ -19,7 +19,7 @@ svg {
 }
 
 div.tooltip {   
-  position: fixed;           
+  position: absolute;           
   text-align: center;           
   width: 60px;                  
   height: 28px;                 
@@ -53,8 +53,16 @@ div.tooltip {
 
 </style>
 <body>
+<div class="media">
+            <div class="media-left">
+                <a href="http://chandrak1907.github.io/DataVisualization/FinalReport.html">
+                    <img class="media-object" src="back.jpg" style="width: 30px; height: 20px;">
+                </a>
+            </div>
+
+  <div id="title"><h1 style="font-size:200%">Time Series Plot of Number of Complaints with Consumer Financial Protection Bureau</h1></div>
   <div id="small"></div>
-  <p> Blank here </p>
+  <p> <h1 style="font-size:120%">Click on small multiple to see area chart </h1></p>
   <div id="Area"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -113,7 +121,7 @@ d3.csv("newtime.csv", type, function(error, data) {
 
 
   // Add an SVG element for each symbol, with the desired dimensions and margin.
-  var svg = d3.select("#small").selectAll("svg")
+  var svg1 = d3.select("#small").selectAll("svg")
       .data(symbols)
     .enter().append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -135,18 +143,19 @@ d3.csv("newtime.csv", type, function(error, data) {
   //     .call(yAxis);
 
 
+
   // Add the area path elements. Note: the y-domain is set per element.
-  svg.append("path")
+  svg1.append("path")
       .attr("class", "area")
       .attr("d", function(d) { y.domain([0, d.maxPrice]); return area(d.values); });
 
   // Add the line path elements. Note: the y-domain is set per element.
-  svg.append("path")
+  svg1.append("path")
       .attr("class", "line")
       .attr("d", function(d) { y.domain([0, d.maxPrice]); return line(d.values); });
 
   // Add a small label for the symbol name.
-  svg.append("text")
+  svg1.append("text")
       .attr("x", width - 6)
       .attr("y", height - 6)
       .style("text-anchor", "end")
@@ -160,6 +169,7 @@ function type(d) {
 }
 
 function test(d){
+  d3.select("#Area").selectAll("svg").remove();
   // d3.selectAll("#Area").transition();
   BigPlot(d);
 }
@@ -239,14 +249,14 @@ var G= x;
 
 var tip = d3.tip(XY)
         .attr('class', 'd3-tip')
-          .offset([-10, 0])
+          .offset([0, 0])
           .html(function(e) {
               // console.log("i am in tooltip",XY);
                 return XY;
                  });
 svgA.call(tip);
 d3.csv("monthlycomplaints.csv", type, function(error, data,valX) {
-
+  
   // data.forEach(function(d) {
   //   d.date = parseDate(d.date);
   // });
@@ -283,9 +293,10 @@ d3.csv("monthlycomplaints.csv", type, function(error, data,valX) {
         es0 = data[i - 1],
         d1 = data[i],
         e = er0 - es0.date > d1.date - er0 ? d1 : es0;
-        console.log(" DD ",e.date);
+        // console.log(" DD ",e.date);
         var p = (e.date).toString("mm-yy");
-      XY = p+ " -- "+e[d.key]
+      // XY = p+ " -- "+e[d.key]
+      XY = e[d.key];
    return XY; 
 }
 
